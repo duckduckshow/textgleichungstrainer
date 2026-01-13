@@ -3,624 +3,986 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Gleichungen Schritt für Schritt (DING1 + DING2)</title>
+  <title>Gleichungen Schritt für Schritt (Summe + Differenz)</title>
   <style>
     :root{
-      --bg:#0b1020; --card:#111a33; --card2:#0f1730;
-      --text:#eef2ff; --muted:#b7c0ff;
-      --ok:#22c55e; --bad:#ef4444; --warn:#f59e0b;
-      --border:rgba(255,255,255,.12);
-      --shadow: 0 12px 28px rgba(0,0,0,.35);
-      --radius:18px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      --bg:#0b1020; --card:#121a33; --muted:#8ea0d6; --text:#eef2ff;
+      --good:#22c55e; --bad:#ef4444; --warn:#f59e0b; --line:#243055;
+      --btn:#1f2a52; --btn2:#182044;
     }
-    body{margin:0;background:radial-gradient(1200px 800px at 10% 10%, #182459 0%, var(--bg) 55%, #060913 100%);color:var(--text);font-family:var(--sans);}
-    .wrap{max-width:980px;margin:0 auto;padding:20px 16px 60px;}
-    header{display:flex;gap:14px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;margin-bottom:16px}
-    h1{margin:0;font-size:22px;letter-spacing:.2px}
-    .sub{margin:6px 0 0;color:var(--muted);line-height:1.35}
-    .grid{display:grid;grid-template-columns: 1.1fr .9fr;gap:14px;margin-top:14px}
-    @media (max-width: 900px){.grid{grid-template-columns:1fr}}
-    .card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px}
-    .card h2{margin:0 0 10px;font-size:16px}
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    label{font-size:13px;color:var(--muted)}
-    input, select, button, textarea{
-      font-family:var(--sans);
-      background:rgba(255,255,255,.06);
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
+      background:linear-gradient(180deg,#070a14 0%, #0b1020 40%, #070a14 100%);
       color:var(--text);
-      border:1px solid var(--border);
-      border-radius:12px;
+      min-height:100vh;
+      display:flex; align-items:flex-start; justify-content:center;
+      padding:24px;
+    }
+    .wrap{width:min(980px,100%); display:grid; gap:16px}
+    .top{
+      display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;
+    }
+    .title{
+      display:flex; flex-direction:column; gap:4px;
+    }
+    h1{font-size:18px; margin:0; letter-spacing:.2px}
+    .sub{color:var(--muted); font-size:13px}
+    .card{
+      background:rgba(18,26,51,.92);
+      border:1px solid rgba(36,48,85,.9);
+      border-radius:16px;
+      padding:16px;
+      box-shadow:0 12px 28px rgba(0,0,0,.35);
+    }
+    .grid{
+      display:grid; gap:16px;
+      grid-template-columns: 1.1fr .9fr;
+    }
+    @media (max-width: 860px){ .grid{grid-template-columns:1fr} }
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .pill{
+      padding:6px 10px; border:1px solid var(--line); border-radius:999px;
+      font-size:12px; color:var(--muted); background:rgba(7,10,20,.35);
+    }
+    .progress{
+      height:10px; background:rgba(7,10,20,.55);
+      border:1px solid var(--line); border-radius:999px; overflow:hidden;
+    }
+    .bar{
+      height:100%; width:0%;
+      background:linear-gradient(90deg, rgba(34,197,94,.95), rgba(34,197,94,.55));
+      transition:width .25s ease;
+    }
+    label{font-size:13px; color:var(--muted)}
+    input[type="text"], input[type="number"], select{
+      width:100%;
       padding:10px 12px;
+      background:rgba(7,10,20,.55);
+      border:1px solid var(--line);
+      border-radius:12px;
+      color:var(--text);
       outline:none;
     }
-    input:focus, select:focus, textarea:focus{border-color:rgba(183,192,255,.55); box-shadow: 0 0 0 4px rgba(183,192,255,.12);}
-    textarea{width:100%;min-height:110px;resize:vertical;line-height:1.35}
-    .mono{font-family:var(--mono)}
-    button{
+    input:focus, select:focus{border-color:rgba(142,160,214,.9)}
+    .btn{
       cursor:pointer;
-      background:rgba(183,192,255,.14);
-      border-color:rgba(183,192,255,.22);
-      transition:.15s transform, .15s background;
+      border:1px solid var(--line);
+      background:var(--btn);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:600;
+      transition:transform .05s ease, background .15s ease;
     }
-    button:hover{background:rgba(183,192,255,.20)}
-    button:active{transform:translateY(1px)}
-    .btn2{background:rgba(34,197,94,.16);border-color:rgba(34,197,94,.30)}
-    .btn2:hover{background:rgba(34,197,94,.22)}
-    .btnBad{background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.25)}
-    .btnBad:hover{background:rgba(239,68,68,.20)}
-    .pill{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--border);border-radius:999px;padding:8px 10px;background:rgba(255,255,255,.05)}
-    .pill strong{font-size:12px}
-    .msg{margin-top:10px;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.05);line-height:1.35}
-    .ok{border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.10)}
-    .bad{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.10)}
-    .warn{border-color:rgba(245,158,11,.35);background:rgba(245,158,11,.10)}
-    .step{border:1px dashed rgba(183,192,255,.25);border-radius:var(--radius);padding:12px;margin-top:12px}
-    .stepHead{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
-    .stepHead .title{font-weight:700}
-    .small{font-size:12px;color:var(--muted)}
-    .locked{opacity:.55;pointer-events:none}
-    .eqBox{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
-    .eqBox input{min-width:220px}
-    .spacer{height:6px}
-    .hr{height:1px;background:rgba(255,255,255,.10);margin:12px 0}
-    .hint{color:var(--muted);font-size:13px;line-height:1.35}
-    .kbd{font-family:var(--mono);font-size:12px;padding:2px 6px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.18)}
-    .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    @media (max-width: 600px){.two{grid-template-columns:1fr}}
+    .btn:active{transform:scale(.99)}
+    .btn.secondary{background:var(--btn2); font-weight:600}
+    .btn.good{background:rgba(34,197,94,.18); border-color:rgba(34,197,94,.5)}
+    .btn.bad{background:rgba(239,68,68,.14); border-color:rgba(239,68,68,.45)}
+    .btn:disabled{opacity:.5; cursor:not-allowed}
+    .stepTitle{font-size:15px; margin:0 0 6px 0}
+    .hint{
+      background:rgba(245,158,11,.12);
+      border:1px solid rgba(245,158,11,.35);
+      color:#ffe8b3;
+      padding:10px 12px; border-radius:12px;
+      font-size:13px;
+    }
+    .feedback{
+      padding:10px 12px; border-radius:12px;
+      border:1px solid var(--line);
+      background:rgba(7,10,20,.45);
+      font-size:13px;
+      line-height:1.35;
+      white-space:pre-line;
+    }
+    .feedback.good{border-color:rgba(34,197,94,.5); background:rgba(34,197,94,.10)}
+    .feedback.bad{border-color:rgba(239,68,68,.45); background:rgba(239,68,68,.10)}
+    .feedback.warn{border-color:rgba(245,158,11,.45); background:rgba(245,158,11,.10)}
+    .mono{font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+    .small{font-size:12px; color:var(--muted)}
+    .divider{height:1px; background:rgba(36,48,85,.8); margin:12px 0}
+    .two{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+    @media (max-width: 560px){ .two{grid-template-columns:1fr} }
+    .radioRow{display:flex; gap:10px; flex-wrap:wrap}
+    .radio{
+      display:flex; align-items:center; gap:8px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:rgba(7,10,20,.35);
+      cursor:pointer;
+      user-select:none;
+    }
+    .radio input{transform:translateY(1px)}
+    .footerNote{font-size:12px; color:var(--muted); line-height:1.35}
+    a{color:#c7d2fe}
   </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div>
-      <h1>Gleichungen Schritt für Schritt: <span class="mono">DING1 + DING2 = SUMME</span></h1>
-      <div class="sub">
-        Ziel: Jede Aufgabe wird in kleine Schritte zerlegt. Jeder Schritt wird überprüft und du bekommst sofort Feedback.<br/>
-        Erlaubte Eingaben bei Ausdrücken: Zahlen, <span class="kbd">x</span>, <span class="kbd">+</span>, <span class="kbd">-</span>, <span class="kbd">*</span>, Klammern. Beispiele: <span class="kbd">x+6</span>, <span class="kbd">2*x-3</span>, <span class="kbd">(x-6)+x</span>
+  <div class="wrap">
+    <div class="top">
+      <div class="title">
+        <h1>Gleichungen Schritt für Schritt</h1>
+        <div class="sub">Summe + „um … mehr/weniger“ — jeder Schritt wird geprüft.</div>
       </div>
-    </div>
-    <div class="pill">
-      <strong>Modus</strong>
-      <select id="modeSel" aria-label="Modus">
-        <option value="preset" selected>Aufgaben (vorgegeben)</option>
-        <option value="custom">Eigene Aufgabe</option>
-      </select>
-    </div>
-  </header>
-
-  <div class="grid">
-    <div class="card">
-      <h2>Aufgabe</h2>
-
-      <div id="presetBox">
-        <div class="row">
-          <label for="taskSel">Wähle eine Aufgabe:</label>
-          <select id="taskSel">
-            <option value="sandra">Sandra &amp; Hannes (Alter)</option>
-            <option value="taschengeld">Stefan &amp; Thomas (Taschengeld)</option>
-            <option value="wellensittiche">Verena (Wellensittiche)</option>
-            <option value="hanni">Hanni &amp; Nanni (Taschengeld)</option>
-          </select>
-          <button id="loadBtn">Laden</button>
-        </div>
-        <div class="spacer"></div>
-        <textarea id="taskText" readonly></textarea>
-      </div>
-
-      <div id="customBox" style="display:none">
-        <div class="hint">
-          Für „Eigene Aufgabe“ gibst du nur die Struktur an:
-          <ul>
-            <li><b>DING1</b> und <b>DING2</b> (Bezeichnungen)</li>
-            <li><b>SUMME</b> (Zahl)</li>
-            <li><b>Unterschied</b>: „DING2 ist um d mehr als DING1“ (d kann auch negativ sein)</li>
-          </ul>
-          Beispiel: DING1=Sandra, DING2=Hannes, SUMME=30, d=6 (Hannes ist um 6 mehr als Sandra).
-        </div>
-        <div class="two">
-          <div>
-            <label>DING1</label>
-            <input id="cName1" placeholder="z.B. Sandra" value="Sandra" />
-          </div>
-          <div>
-            <label>DING2</label>
-            <input id="cName2" placeholder="z.B. Hannes" value="Hannes" />
-          </div>
-          <div>
-            <label>SUMME</label>
-            <input id="cSum" type="number" step="1" value="30" />
-          </div>
-          <div>
-            <label>Unterschied d (DING2 = DING1 + d)</label>
-            <input id="cDiff" type="number" step="1" value="6" />
-          </div>
-        </div>
-        <div class="row" style="margin-top:10px">
-          <button id="applyCustomBtn" class="btn2">Eigene Aufgabe übernehmen</button>
-        </div>
-        <div class="spacer"></div>
-        <textarea id="customPreview" readonly></textarea>
-      </div>
-
-      <div class="hr"></div>
-
       <div class="row">
-        <button id="resetBtn" class="btnBad">Alles zurücksetzen</button>
-        <span class="small">Tipp: Wenn du stecken bleibst, schau in die Hinweise pro Schritt.</span>
+        <span class="pill" id="pillProblem">Problem: —</span>
+        <span class="pill" id="pillStep">Schritt: —</span>
       </div>
     </div>
 
     <div class="card">
-      <h2>Status</h2>
-      <div class="msg" id="statusMsg">
-        Lade eine Aufgabe oder erstelle eine eigene Aufgabe, dann starte mit Schritt 1.
+      <div class="progress" aria-label="Fortschritt">
+        <div class="bar" id="progressBar"></div>
       </div>
-      <div class="hr"></div>
-      <div class="hint" id="goalHint"></div>
-      <div class="hr"></div>
-      <div class="hint">
-        <b>Wichtig:</b> In diesem Tool geht es nicht nur um das Ergebnis, sondern um die <b>korrekten Schritte</b>.
-        Jede Aufgabe folgt dem Muster:
-        <div class="mono" style="margin-top:8px">
-          DING1 + DING2 = SUMME<br/>
-          DING2 = DING1 + d
+      <div class="small" id="progressText" style="margin-top:8px;">0 / 5 erledigt</div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="row" style="justify-content:space-between; align-items:flex-start; gap:12px;">
+          <div style="flex:1">
+            <label for="problemSelect">Aufgabe wählen</label>
+            <select id="problemSelect"></select>
+          </div>
+          <div class="row" style="margin-top:22px;">
+            <button class="btn secondary" id="btnNew">Neu starten</button>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div id="problemText" class="feedback" style="margin-bottom:12px;"></div>
+
+        <!-- STEP 1 -->
+        <section id="step1">
+          <h2 class="stepTitle">Schritt 1: Allgemeine Summe aufschreiben</h2>
+          <div class="small">Schreibe die Summe als Gleichung, z.B. <span class="mono">Sandra + Hannes = 30</span></div>
+          <div style="margin-top:10px;">
+            <label for="inpSumEq">Deine Gleichung</label>
+            <input id="inpSumEq" type="text" placeholder="z.B. A + B = 30" autocomplete="off" />
+          </div>
+          <div class="row" style="margin-top:12px;">
+            <button class="btn" id="check1">Prüfen</button>
+            <button class="btn secondary" id="hint1">Hinweis</button>
+          </div>
+          <div id="fb1" class="feedback" style="margin-top:12px; display:none;"></div>
+          <div id="h1" class="hint" style="margin-top:12px; display:none;"></div>
+        </section>
+
+        <!-- STEP 2 -->
+        <section id="step2" style="display:none;">
+          <h2 class="stepTitle">Schritt 2: Lege fest, was <span class="mono">x</span> bedeutet</h2>
+          <div class="small">Wähle eine Größe als <span class="mono">x</span>. Dann gib die andere Größe als <span class="mono">x ± Zahl</span> an.</div>
+
+          <div class="divider"></div>
+
+          <div class="radioRow" id="xChoice"></div>
+
+          <div style="margin-top:10px;">
+            <label id="lblOtherExpr" for="inpOtherExpr">Andere Größe als Ausdruck in x</label>
+            <input id="inpOtherExpr" type="text" placeholder="z.B. x + 6" autocomplete="off" />
+            <div class="small" style="margin-top:6px;">
+              Erlaubt (simpel): <span class="mono">x</span>, <span class="mono">x+6</span>, <span class="mono">x-3</span>, <span class="mono">6+x</span>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:12px;">
+            <button class="btn" id="check2">Prüfen</button>
+            <button class="btn secondary" id="hint2">Hinweis</button>
+          </div>
+          <div id="fb2" class="feedback" style="margin-top:12px; display:none;"></div>
+          <div id="h2" class="hint" style="margin-top:12px; display:none;"></div>
+        </section>
+
+        <!-- STEP 3 -->
+        <section id="step3" style="display:none;">
+          <h2 class="stepTitle">Schritt 3: Einsetzen und Gleichung in <span class="mono">x</span> aufstellen</h2>
+          <div class="small">Setze deine Ausdrücke in die Summe ein, z.B. <span class="mono">x + (x+6) = 30</span></div>
+
+          <div style="margin-top:10px;">
+            <label for="inpXEq">Deine Gleichung in x</label>
+            <input id="inpXEq" type="text" placeholder="z.B. x + (x+6) = 30" autocomplete="off" />
+          </div>
+
+          <div class="row" style="margin-top:12px;">
+            <button class="btn" id="check3">Prüfen</button>
+            <button class="btn secondary" id="hint3">Hinweis</button>
+          </div>
+          <div id="fb3" class="feedback" style="margin-top:12px; display:none;"></div>
+          <div id="h3" class="hint" style="margin-top:12px; display:none;"></div>
+        </section>
+
+        <!-- STEP 4 -->
+        <section id="step4" style="display:none;">
+          <h2 class="stepTitle">Schritt 4: Löse nach <span class="mono">x</span></h2>
+          <div class="small">Gib den Wert für <span class="mono">x</span> ein (nur Zahl).</div>
+
+          <div style="margin-top:10px;">
+            <label for="inpXVal">x =</label>
+            <input id="inpXVal" type="number" step="1" placeholder="z.B. 12" />
+          </div>
+
+          <div class="row" style="margin-top:12px;">
+            <button class="btn" id="check4">Prüfen</button>
+            <button class="btn secondary" id="hint4">Hinweis</button>
+          </div>
+          <div id="fb4" class="feedback" style="margin-top:12px; display:none;"></div>
+          <div id="h4" class="hint" style="margin-top:12px; display:none;"></div>
+        </section>
+
+        <!-- STEP 5 -->
+        <section id="step5" style="display:none;">
+          <h2 class="stepTitle">Schritt 5: Werte für beide Größen angeben</h2>
+          <div class="small">Trage die beiden Ergebnisse ein.</div>
+
+          <div class="two" style="margin-top:10px;">
+            <div>
+              <label id="lblA" for="inpAVal">A</label>
+              <input id="inpAVal" type="number" step="1" placeholder="Zahl" />
+            </div>
+            <div>
+              <label id="lblB" for="inpBVal">B</label>
+              <input id="inpBVal" type="number" step="1" placeholder="Zahl" />
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:12px;">
+            <button class="btn" id="check5">Prüfen</button>
+            <button class="btn secondary" id="hint5">Hinweis</button>
+          </div>
+          <div id="fb5" class="feedback" style="margin-top:12px; display:none;"></div>
+          <div id="h5" class="hint" style="margin-top:12px; display:none;"></div>
+        </section>
+
+        <div class="divider"></div>
+
+        <div class="footerNote">
+          Tipp: Dieses Tool prüft „gleichwertige“ Eingaben (z.B. <span class="mono">x+(x+6)=30</span> ist okay).
+          Es ist absichtlich simpel gehalten (nur lineare Ausdrücke mit <span class="mono">x</span>).
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="stepTitle">Lehrkraft-Ansicht (automatisch)</h2>
+        <div class="small">Hier siehst du, was das Tool als korrekt erwartet (wird erst sinnvoll, nachdem Schritt 2 gewählt wurde).</div>
+
+        <div class="divider"></div>
+
+        <div class="feedback" id="teacherBox">
+          <span class="small">Wähle eine Aufgabe und starte.</span>
         </div>
       </div>
     </div>
   </div>
-
-  <div class="card" style="margin-top:14px">
-    <h2>Schritte</h2>
-
-    <!-- Schritt 1 -->
-    <div class="step" id="step1">
-      <div class="stepHead">
-        <div class="title">Schritt 1: Allgemeine Gleichung aufschreiben</div>
-        <div class="small" id="s1tag">offen</div>
-      </div>
-
-      <div class="hint">
-        Schreibe die Grundgleichung als: <span class="mono">DING1 + DING2 = SUMME</span><br/>
-        Nutze die Dropdowns und trage die Summe ein.
-      </div>
-
-      <div class="eqBox">
-        <select id="s1a"></select>
-        <span class="mono">+</span>
-        <select id="s1b"></select>
-        <span class="mono">=</span>
-        <input id="s1sum" type="number" step="1" />
-        <button id="s1check">Prüfen</button>
-      </div>
-      <div class="msg" id="s1msg"></div>
-    </div>
-
-    <!-- Schritt 2 -->
-    <div class="step locked" id="step2">
-      <div class="stepHead">
-        <div class="title">Schritt 2: Eine Variable festlegen und Beziehung als Ausdruck</div>
-        <div class="small" id="s2tag">gesperrt</div>
-      </div>
-
-      <div class="hint">
-        Lege fest, wer <span class="kbd">x</span> ist. Dann drücke die Beziehung aus.<br/>
-        Beispiel „Hannes ist um 6 älter“: Wenn Sandra = x, dann Hannes = x+6.
-      </div>
-
-      <div class="row" style="margin-top:10px">
-        <label>Setze <span class="kbd">x</span> für:</label>
-        <label><input type="radio" name="xfor" value="1" checked /> <span id="xname1"></span></label>
-        <label><input type="radio" name="xfor" value="2" /> <span id="xname2"></span></label>
-      </div>
-
-      <div class="eqBox">
-        <span class="mono" id="s2lhs"></span>
-        <span class="mono">=</span>
-        <input id="s2expr" class="mono" placeholder="z.B. x+6 oder x-3" />
-        <button id="s2check">Prüfen</button>
-      </div>
-      <div class="msg" id="s2msg"></div>
-    </div>
-
-    <!-- Schritt 3 -->
-    <div class="step locked" id="step3">
-      <div class="stepHead">
-        <div class="title">Schritt 3: Ganze Gleichung aufstellen (Summe einsetzen)</div>
-        <div class="small" id="s3tag">gesperrt</div>
-      </div>
-
-      <div class="hint">
-        Setze deine Ausdrücke aus Schritt 2 in <span class="mono">DING1 + DING2 = SUMME</span> ein.<br/>
-        Du darfst umformen (z.B. <span class="kbd">x+(x+6)=30</span> oder <span class="kbd">2*x+6=30</span>).
-      </div>
-
-      <div class="eqBox">
-        <input id="s3eq" class="mono" placeholder="z.B. x+(x+6)=30" />
-        <button id="s3check">Prüfen</button>
-      </div>
-      <div class="msg" id="s3msg"></div>
-    </div>
-
-    <!-- Schritt 4 -->
-    <div class="step locked" id="step4">
-      <div class="stepHead">
-        <div class="title">Schritt 4: Gleichung lösen (x berechnen)</div>
-        <div class="small" id="s4tag">gesperrt</div>
-      </div>
-
-      <div class="hint">
-        Löse nach <span class="kbd">x</span> auf und gib den Wert ein. (Zahl eingeben)
-      </div>
-
-      <div class="eqBox">
-        <span class="mono">x =</span>
-        <input id="s4x" type="number" step="1" />
-        <button id="s4check">Prüfen</button>
-      </div>
-      <div class="msg" id="s4msg"></div>
-    </div>
-
-    <!-- Schritt 5 -->
-    <div class="step locked" id="step5">
-      <div class="stepHead">
-        <div class="title">Schritt 5: Beide Werte berechnen</div>
-        <div class="small" id="s5tag">gesperrt</div>
-      </div>
-
-      <div class="hint">
-        Setze <span class="kbd">x</span> in deine Ausdrücke ein und gib die beiden Ergebnisse ein.
-      </div>
-
-      <div class="eqBox">
-        <span class="mono" id="s5n1"></span>
-        <input id="s5v1" type="number" step="1" />
-        <span class="mono" id="s5n2"></span>
-        <input id="s5v2" type="number" step="1" />
-        <button id="s5check">Prüfen</button>
-      </div>
-      <div class="msg" id="s5msg"></div>
-    </div>
-
-    <div class="hr"></div>
-    <div class="msg" id="finalMsg" style="display:none"></div>
-  </div>
-</div>
 
 <script>
-/* =========================================================
-   Mini-Parser für lineare Terme ax + b (mit +, -, *, Klammern)
-   ========================================================= */
-
-function normalize(str){
-  return String(str || "")
-    .replace(/\s+/g,"")
-    .replace(/,/g,"."); // falls jemand 2,5 eingibt
-}
-
-// Tokenizer: numbers, x, + - * ( ) =
-function tokenize(expr){
-  const s = normalize(expr);
-  const tokens = [];
-  let i = 0;
-  while(i < s.length){
-    const ch = s[i];
-
-    if(/[0-9.]/.test(ch)){
-      let j = i+1;
-      while(j < s.length && /[0-9.]/.test(s[j])) j++;
-      tokens.push({t:"num", v: parseFloat(s.slice(i,j))});
-      i = j;
-      continue;
+(function(){
+  // ----------------------------
+  // Aufgaben-Daten
+  // Struktur:
+  // A und B sind die zwei "Dinge"
+  // sum = A + B
+  // relation: A = B + diff  (diff kann negativ sein)
+  // Beispiel "A ist 6 jünger als B" => A = B - 6 => diff = -6
+  // Beispiel "A ist 7 mehr als B"   => A = B + 7 => diff = +7
+  // ----------------------------
+  const TASKS = [
+    {
+      id:"sandra-hannes",
+      title:"Sandra & Hannes (Alter)",
+      text:"Sandra ist um 6 Jahre jünger als ihr Bruder Hannes. Die beiden sind zusammen 30 Jahre alt.",
+      A:"Sandra", B:"Hannes", sum:30,
+      diff: -6, // A = B - 6
+      unit:"Jahre"
+    },
+    {
+      id:"stefan-thomas",
+      title:"Stefan & Thomas (Taschengeld)",
+      text:"Stefan und Thomas bekommen zusammen 21 € Taschengeld. Thomas bekommt um 3 € weniger als Stefan.",
+      A:"Thomas", B:"Stefan", sum:21,
+      diff: -3, // A = B - 3 (Thomas weniger)
+      unit:"€"
+    },
+    {
+      id:"verena-wellensittiche",
+      title:"Wellensittiche (blau/grün)",
+      text:"Verena züchtet Wellensittiche. Sie hat 49 Vögel, die entweder grünes oder blaues Gefieder haben. Es sind um 7 blaue Vögel mehr als grüne.",
+      A:"Blau", B:"Grün", sum:49,
+      diff: +7, // Blau = Grün + 7
+      unit:"Vögel"
+    },
+    {
+      id:"hanni-nanni",
+      title:"Hanni & Nanni (Taschengeld)",
+      text:"Hanni bekommt um 7 € mehr Taschengeld als Nanni. Zusammen erhalten sie 29 €.",
+      A:"Hanni", B:"Nanni", sum:29,
+      diff: +7, // Hanni = Nanni + 7
+      unit:"€"
     }
-    if(ch === "x" || ch === "X"){
-      tokens.push({t:"var"});
-      i++;
-      continue;
-    }
-    if(ch === "+" || ch === "-" || ch === "*" || ch === "(" || ch === ")" || ch === "="){
-      tokens.push({t: ch});
-      i++;
-      continue;
-    }
-    // Unbekanntes Zeichen
-    return { ok:false, error:`Unbekanntes Zeichen: "${ch}"` };
+  ];
+
+  // ----------------------------
+  // DOM
+  // ----------------------------
+  const problemSelect = document.getElementById("problemSelect");
+  const problemText = document.getElementById("problemText");
+
+  const pillProblem = document.getElementById("pillProblem");
+  const pillStep = document.getElementById("pillStep");
+  const progressBar = document.getElementById("progressBar");
+  const progressText = document.getElementById("progressText");
+
+  const teacherBox = document.getElementById("teacherBox");
+
+  const step1 = document.getElementById("step1");
+  const step2 = document.getElementById("step2");
+  const step3 = document.getElementById("step3");
+  const step4 = document.getElementById("step4");
+  const step5 = document.getElementById("step5");
+
+  const inpSumEq = document.getElementById("inpSumEq");
+  const inpOtherExpr = document.getElementById("inpOtherExpr");
+  const inpXEq = document.getElementById("inpXEq");
+  const inpXVal = document.getElementById("inpXVal");
+  const inpAVal = document.getElementById("inpAVal");
+  const inpBVal = document.getElementById("inpBVal");
+
+  const lblA = document.getElementById("lblA");
+  const lblB = document.getElementById("lblB");
+  const xChoice = document.getElementById("xChoice");
+  const lblOtherExpr = document.getElementById("lblOtherExpr");
+
+  const btnNew = document.getElementById("btnNew");
+
+  const fb1 = document.getElementById("fb1");
+  const fb2 = document.getElementById("fb2");
+  const fb3 = document.getElementById("fb3");
+  const fb4 = document.getElementById("fb4");
+  const fb5 = document.getElementById("fb5");
+
+  const h1 = document.getElementById("h1");
+  const h2 = document.getElementById("h2");
+  const h3 = document.getElementById("h3");
+  const h4 = document.getElementById("h4");
+  const h5 = document.getElementById("h5");
+
+  // Buttons
+  document.getElementById("check1").addEventListener("click", checkStep1);
+  document.getElementById("check2").addEventListener("click", checkStep2);
+  document.getElementById("check3").addEventListener("click", checkStep3);
+  document.getElementById("check4").addEventListener("click", checkStep4);
+  document.getElementById("check5").addEventListener("click", checkStep5);
+
+  document.getElementById("hint1").addEventListener("click", ()=>toggleHint(1));
+  document.getElementById("hint2").addEventListener("click", ()=>toggleHint(2));
+  document.getElementById("hint3").addEventListener("click", ()=>toggleHint(3));
+  document.getElementById("hint4").addEventListener("click", ()=>toggleHint(4));
+  document.getElementById("hint5").addEventListener("click", ()=>toggleHint(5));
+
+  btnNew.addEventListener("click", resetAll);
+
+  // ----------------------------
+  // Zustand
+  // ----------------------------
+  let task = TASKS[0];
+  let done = [false,false,false,false,false]; // 5 Schritte
+  let xIs = "A"; // "A" oder "B" (wird in Schritt 2 gesetzt)
+  let exprA = null; // linear (a,b)
+  let exprB = null;
+
+  // ----------------------------
+  // Hilfsfunktionen: Anzeige
+  // ----------------------------
+  function setFeedback(el, kind, text){
+    el.style.display = "block";
+    el.className = "feedback " + (kind || "");
+    el.textContent = text;
   }
-  return { ok:true, tokens };
-}
+  function hideFeedback(el){ el.style.display="none"; el.textContent=""; el.className="feedback"; }
 
-// Wir rechnen mit Paaren {a,b} = a*x + b
-function add(p,q){ return {a:p.a+q.a, b:p.b+q.b}; }
-function sub(p,q){ return {a:p.a-q.a, b:p.b-q.b}; }
-function mul(p,q){
-  // (ax+b)(cx+d) ist nur linear, wenn mindestens einer der a/c = 0
-  if(p.a !== 0 && q.a !== 0) return { ok:false, error:"Nicht linear: x*x ist hier nicht erlaubt." };
-  return { ok:true, val: { a: p.a*q.b + q.a*p.b, b: p.b*q.b } };
-}
-
-function parseLinearExpr(expr){
-  const tok = tokenize(expr);
-  if(!tok.ok) return { ok:false, error: tok.error };
-
-  // Shunting-yard -> RPN
-  const output = [];
-  const ops = [];
-  const prec = { "+":1, "-":1, "*":2 };
-
-  // Hilfsfunktion: unary minus behandeln
-  // Wir wandeln "-( ... )" oder "-x" oder "-5" in "0 - (...)"
-  const tks = tok.tokens.slice();
-  const fixed = [];
-  for(let i=0;i<tks.length;i++){
-    const cur = tks[i];
-    const prev = fixed[fixed.length-1];
-    if(cur.t === "-" && (!prev || (prev.t === "+" || prev.t === "-" || prev.t === "*" || prev.t === "(" || prev.t === "="))){
-      fixed.push({t:"num", v:0});
-      fixed.push({t:"-"});
-      continue;
-    }
-    fixed.push(cur);
+  function toggleHint(n){
+    const map = {1:h1,2:h2,3:h3,4:h4,5:h5};
+    const el = map[n];
+    el.style.display = (el.style.display === "none" ? "block" : "none");
   }
 
-  for(const token of fixed){
-    if(token.t === "num" || token.t === "var"){
-      output.push(token);
-    } else if(token.t === "+" || token.t === "-" || token.t === "*"){
-      while(ops.length){
-        const top = ops[ops.length-1];
-        if((top.t === "+" || top.t === "-" || top.t === "*") && prec[top.t] >= prec[token.t]){
-          output.push(ops.pop());
-        } else break;
+  function updatePills(){
+    pillProblem.textContent = "Problem: " + task.title;
+    const stepNum = currentStepIndex()+1;
+    pillStep.textContent = "Schritt: " + stepNum + " / 5";
+  }
+
+  function updateProgress(){
+    const count = done.filter(Boolean).length;
+    progressText.textContent = count + " / 5 erledigt";
+    progressBar.style.width = (count/5*100) + "%";
+  }
+
+  function currentStepIndex(){
+    // erster nicht erledigter Schritt
+    for(let i=0;i<done.length;i++){
+      if(!done[i]) return i;
+    }
+    return 4;
+  }
+
+  function showSteps(){
+    step1.style.display = done[0] ? "none" : "block";
+    step2.style.display = (done[0] && !done[1]) ? "block" : "none";
+    step3.style.display = (done[0] && done[1] && !done[2]) ? "block" : "none";
+    step4.style.display = (done[0] && done[1] && done[2] && !done[3]) ? "block" : "none";
+    step5.style.display = (done[0] && done[1] && done[2] && done[3] && !done[4]) ? "block" : "none";
+
+    // Wenn alles fertig:
+    if(done.every(Boolean)){
+      step1.style.display = "none";
+      step2.style.display = "none";
+      step3.style.display = "none";
+      step4.style.display = "none";
+      step5.style.display = "block";
+    }
+    updatePills();
+    updateProgress();
+    updateTeacherBox();
+  }
+
+  function updateTeacherBox(){
+    // Nur sinnvolle Erwartung anzeigen, wenn x-Wahl getroffen wurde (nach Schritt 2)
+    let txt = "";
+    txt += "Erwartung (abhängig von deiner x-Wahl):\n\n";
+    txt += "Summe: " + task.A + " + " + task.B + " = " + task.sum + "\n";
+
+    const chosen = (done[1] || done[2] || done[3] || done[4]);
+    if(!chosen){
+      txt += "\nWähle in Schritt 2, wer x ist, dann zeigt das Tool die erwartete Umformung.";
+      teacherBox.textContent = txt;
+      return;
+    }
+
+    const eA = exprToString(exprA);
+    const eB = exprToString(exprB);
+    txt += "\nWenn x = " + (xIs==="A" ? task.A : task.B) + ":\n";
+    txt += task.A + " = " + eA + "\n";
+    txt += task.B + " = " + eB + "\n";
+    txt += "\nEingesetzt: (" + eA + ") + (" + eB + ") = " + task.sum + "\n";
+
+    const sol = solveForX(exprA, exprB, task.sum);
+    txt += "\nLösung: x = " + sol.x + "\n";
+    txt += task.A + " = " + sol.A + " " + task.unit + "\n";
+    txt += task.B + " = " + sol.B + " " + task.unit + "\n";
+
+    teacherBox.textContent = txt;
+  }
+
+  // ----------------------------
+  // Parser: lineare Ausdrücke ax + b
+  // Ziel: simple Eingaben akzeptieren:
+  // "x", "x+6", "x-3", "6+x", "  x +  6  "
+  // (Optional: Klammern werden nur entfernt, nicht "ausmultipliziert")
+  // ----------------------------
+  function normalize(s){
+    return (s||"")
+      .toLowerCase()
+      .replace(/\s+/g,"")
+      .replace(/,/g,".");
+  }
+
+  function parseLinear(expr){
+    // returns {a: number, b: number} for a*x + b
+    // very limited and safe parser
+    let s = normalize(expr);
+
+    // remove outer parentheses repeatedly
+    while(s.startsWith("(") && s.endsWith(")")){
+      // only strip if parentheses match in a trivial way
+      const inner = s.slice(1,-1);
+      if(isBalanced(inner)){
+        s = inner;
+      } else break;
+    }
+
+    // if still has parentheses inside, we only allow patterns like x+(x+6)
+    // parseEquation handles full equations; parseLinear stays minimal:
+    // Accept only: x, x+N, x-N, N+x, -x, -x+N, etc.
+    // No multiplication, division.
+    if(s.includes("*") || s.includes("/") || s.includes("^")) return null;
+
+    // Replace leading '+' if any
+    if(s.startsWith("+")) s = s.slice(1);
+
+    // Helper: parse token like "x", "-x", "12", "-3"
+    const isNumber = (t)=>/^[-+]?\d+(\.\d+)?$/.test(t);
+    const isX = (t)=> t==="x" || t==="+x" || t==="-x";
+
+    // Split by + and - but keep signs
+    // Example: "x-6" => ["x", "-6"]
+    // Example: "6+x" => ["6", "+x"]
+    const parts = [];
+    let cur = "";
+    for(let i=0;i<s.length;i++){
+      const ch = s[i];
+      if((ch==="+" || ch==="-" ) && i>0){
+        parts.push(cur);
+        cur = ch;
+      } else {
+        cur += ch;
       }
-      ops.push(token);
-    } else if(token.t === "("){
-      ops.push(token);
-    } else if(token.t === ")"){
-      let found = false;
-      while(ops.length){
-        const top = ops.pop();
-        if(top.t === "("){ found = true; break; }
-        output.push(top);
+    }
+    if(cur) parts.push(cur);
+
+    let a=0, b=0;
+    for(const p of parts){
+      if(p==="") continue;
+      if(isX(p)){ a += (p.startsWith("-") ? -1 : 1); continue; }
+      if(p.endsWith("x") && isNumber(p.slice(0,-1))){
+        // allow "2x" or "-3x" (optional)
+        a += Number(p.slice(0,-1));
+        continue;
       }
-      if(!found) return { ok:false, error:"Klammerfehler: ) ohne (." };
-    } else if(token.t === "="){
-      return { ok:false, error:"In einen Term (Ausdruck) gehört kein '='." };
+      if(isNumber(p)){ b += Number(p); continue; }
+      return null;
+    }
+    return {a,b};
+  }
+
+  function isBalanced(s){
+    let d=0;
+    for(const ch of s){
+      if(ch==="(") d++;
+      if(ch===")") d--;
+      if(d<0) return false;
+    }
+    return d===0;
+  }
+
+  function exprToString(e){
+    if(!e) return "?";
+    const a = e.a, b = e.b;
+    // Build nice minimal string
+    let out = "";
+    if(a===0){
+      out = String(b);
+      return out;
+    }
+    if(a===1) out = "x";
+    else if(a===-1) out = "-x";
+    else out = a + "x";
+
+    if(b>0) out += "+" + b;
+    if(b<0) out += b; // b already negative
+    if(b===0) {/* nothing */}
+    return out;
+  }
+
+  function parseSumEquation(eq){
+    // Accept forms like "Sandra+Hannes=30" in any order
+    // returns {leftNames:[n1,n2], sum:number} or null
+    const s = normalize(eq);
+    if(!s.includes("=")) return null;
+    const [L,R] = s.split("=");
+    if(R==="" || L==="") return null;
+    if(!/^\d+(\.\d+)?$/.test(R)) return null;
+
+    // left must contain a '+'
+    const idx = L.indexOf("+");
+    if(idx<0) return null;
+    const left1 = L.slice(0,idx);
+    const left2 = L.slice(idx+1);
+    if(!left1 || !left2) return null;
+
+    // match names (case-insensitive) against task.A / task.B
+    const a = normalize(task.A);
+    const b = normalize(task.B);
+
+    const names = [left1,left2];
+    const ok = (
+      (names.includes(a) && names.includes(b)) ||
+      (names.includes(aliasOf(a)) && names.includes(b)) ||
+      (names.includes(a) && names.includes(aliasOf(b))) ||
+      (names.includes(aliasOf(a)) && names.includes(aliasOf(b)))
+    );
+
+    // also allow single-letter placeholders "a" and "b"
+    const okAB = names.includes("a") && names.includes("b");
+
+    if(!ok && !okAB) return null;
+
+    return {sum:Number(R), leftNames:names};
+  }
+
+  function aliasOf(nameNorm){
+    // very small alias: allow first letter (e.g. "sandra" -> "s")
+    return nameNorm.length>0 ? nameNorm[0] : nameNorm;
+  }
+
+  function parseLinearEquation(eq){
+    // Parse equation of form (linear expr) = (number OR linear expr)
+    // returns {L:{a,b}, R:{a,b}} or null
+    const s = normalize(eq);
+    if(!s.includes("=")) return null;
+    const [L,R] = s.split("=");
+    if(L==="" || R==="") return null;
+
+    // allow parentheses by simply removing them when safe
+    const cleanSide = (side)=>{
+      // remove parentheses chars; this is safe only for sums of x and constants (we already restrict)
+      // e.g. x+(x+6) -> x+x+6  (works!)
+      let t = side.replace(/[()]/g,"");
+      // turn "--" into "+"
+      t = t.replace(/--/g,"+");
+      t = t.replace(/\+-/g,"-");
+      t = t.replace(/-\+/g,"-");
+      return t;
+    };
+
+    const LL = parseLinear(cleanSide(L));
+    const RR = parseLinear(cleanSide(R));
+    if(!LL || !RR) return null;
+    return {L:LL, R:RR};
+  }
+
+  function equivalentLinearEq(eq1, eq2){
+    // eq: {L:{a,b}, R:{a,b}}
+    // compare L-R
+    const d1 = {a:eq1.L.a - eq1.R.a, b:eq1.L.b - eq1.R.b};
+    const d2 = {a:eq2.L.a - eq2.R.a, b:eq2.L.b - eq2.R.b};
+    return nearlyEqual(d1.a,d2.a) && nearlyEqual(d1.b,d2.b);
+  }
+
+  function nearlyEqual(x,y){
+    return Math.abs(x-y) < 1e-9;
+  }
+
+  // ----------------------------
+  // Mathe: erwartete Ausdrücke + Lösung
+  // ----------------------------
+  function buildExpectedFromChoice(){
+    // relation: A = B + diff
+    // If x = A => A = x, B = x - diff
+    // If x = B => B = x, A = x + diff
+    if(xIs==="A"){
+      exprA = {a:1,b:0};
+      exprB = {a:1,b:(-task.diff)};
     } else {
-      return { ok:false, error:"Token-Fehler." };
+      exprB = {a:1,b:0};
+      exprA = {a:1,b:task.diff};
     }
   }
-  while(ops.length){
-    const top = ops.pop();
-    if(top.t === "(") return { ok:false, error:"Klammerfehler: ( ohne )." };
-    output.push(top);
+
+  function solveForX(eA,eB,sum){
+    // (aA x + bA) + (aB x + bB) = sum
+    const a = eA.a + eB.a;
+    const b = eA.b + eB.b;
+    // a*x + b = sum => x = (sum - b)/a
+    const x = (sum - b)/a;
+
+    const A = eA.a * x + eA.b;
+    const B = eB.a * x + eB.b;
+
+    // For our tasks, x and results are integers
+    return {x, A, B};
   }
 
-  // RPN auswerten
-  const st = [];
-  for(const token of output){
-    if(token.t === "num") st.push({a:0, b:token.v});
-    else if(token.t === "var") st.push({a:1, b:0});
-    else if(token.t === "+" || token.t === "-" || token.t === "*"){
-      if(st.length < 2) return { ok:false, error:"Ausdruck unvollständig." };
-      const q = st.pop();
-      const p = st.pop();
-      if(token.t === "+") st.push(add(p,q));
-      if(token.t === "-") st.push(sub(p,q));
-      if(token.t === "*"){
-        const m = mul(p,q);
-        if(!m.ok) return { ok:false, error:m.error };
-        st.push(m.val);
-      }
+  // ----------------------------
+  // Schritt-Prüfungen
+  // ----------------------------
+  function checkStep1(){
+    hideFeedback(fb1);
+    h1.style.display="none";
+
+    const parsed = parseSumEquation(inpSumEq.value);
+    if(!parsed){
+      setFeedback(fb1,"bad",
+        "Das passt noch nicht.\n" +
+        "Achte auf die Form: Name + Name = Zahl\n" +
+        "Beispiel: " + task.A + " + " + task.B + " = " + task.sum
+      );
+      return;
     }
+    if(!nearlyEqual(parsed.sum, task.sum)){
+      setFeedback(fb1,"bad",
+        "Fast — aber die Summe stimmt nicht.\n" +
+        "In der Aufgabe steht: zusammen = " + task.sum
+      );
+      return;
+    }
+
+    done[0]=true;
+    setFeedback(fb1,"good","✅ Schritt 1 ist korrekt!");
+    showSteps();
   }
-  if(st.length !== 1) return { ok:false, error:"Ausdruck konnte nicht eindeutig ausgewertet werden." };
-  const res = st[0];
-  if(!isFinite(res.a) || !isFinite(res.b)) return { ok:false, error:"Ungültige Zahl im Ausdruck." };
-  return { ok:true, val:res };
-}
 
-function parseLinearEquation(eqStr){
-  const s = normalize(eqStr);
-  const idx = s.indexOf("=");
-  if(idx < 0) return { ok:false, error:"Bitte eine Gleichung mit '=' eingeben." };
-  if(s.indexOf("=", idx+1) !== -1) return { ok:false, error:"Bitte nur ein '=' verwenden." };
-  const left = s.slice(0, idx);
-  const right = s.slice(idx+1);
-  if(!left || !right) return { ok:false, error:"Links und rechts vom '=' muss etwas stehen." };
+  function checkStep2(){
+    hideFeedback(fb2);
+    h2.style.display="none";
 
-  const L = parseLinearExpr(left);
-  if(!L.ok) return { ok:false, error:"Links: " + L.error };
-  const R = parseLinearExpr(right);
-  if(!R.ok) return { ok:false, error:"Rechts: " + R.error };
-  return { ok:true, left:L.val, right:R.val };
-}
+    // read selected x
+    const sel = document.querySelector('input[name="xIs"]:checked');
+    if(!sel){
+      setFeedback(fb2,"bad","Bitte wähle zuerst, was x sein soll.");
+      return;
+    }
+    xIs = sel.value;
+    buildExpectedFromChoice();
 
-// Gleichungen sind äquivalent, wenn (L-R) gleiche Koeffizienten hat (bis auf Faktor).
-// Hier reicht: Beide Gleichungen linear -> L-R ergibt ax+b=0. Wir vergleichen (a,b) proportional.
-function equivalentEq(eqA, eqB){
-  // eq: {left:{a,b}, right:{a,b}}
-  const a1 = eqA.left.a - eqA.right.a;
-  const b1 = eqA.left.b - eqA.right.b;
-  const a2 = eqB.left.a - eqB.right.a;
-  const b2 = eqB.left.b - eqB.right.b;
+    // other expression:
+    const otherExpr = inpOtherExpr.value;
+    const parsed = parseLinear(otherExpr);
+    if(!parsed){
+      setFeedback(fb2,"bad",
+        "Das sieht nicht nach einem einfachen Ausdruck in x aus.\n" +
+        "Erlaubt: x, x+Zahl, x-Zahl, Zahl+x"
+      );
+      return;
+    }
 
-  // beide 0?
-  if(a1===0 && b1===0 && a2===0 && b2===0) return true;
+    // Determine which one is "other"
+    const expectedOther = (xIs==="A") ? exprB : exprA;
 
-  // proportionaler Vergleich: (a1,b1) = k*(a2,b2)
-  // falls (a2,b2)=(0,0) aber (a1,b1) nicht -> false
-  if(a2===0 && b2===0) return false;
+    if(!(nearlyEqual(parsed.a, expectedOther.a) && nearlyEqual(parsed.b, expectedOther.b))){
+      // give targeted feedback
+      const xName = (xIs==="A" ? task.A : task.B);
+      const otherName = (xIs==="A" ? task.B : task.A);
 
-  // wähle k anhand der ersten nicht-Null-Komponente
-  let k = null;
-  if(a2 !== 0) k = a1 / a2;
-  else k = b1 / b2;
+      const expectedStr = exprToString(expectedOther);
+      setFeedback(fb2,"bad",
+        "Noch nicht korrekt.\n" +
+        "Du hast gewählt: x = " + xName + "\n" +
+        "Dann muss " + otherName + " als Ausdruck in x passen.\n" +
+        "Erwartet wäre z.B.: " + expectedStr
+      );
+      return;
+    }
 
-  const eps = 1e-9;
-  return Math.abs(a1 - k*a2) < eps && Math.abs(b1 - k*b2) < eps;
-}
-
-/* =========================================================
-   Aufgaben-Logik
-   ========================================================= */
-
-const presets = {
-  sandra: {
-    text: "Sandra ist um 6 Jahre jünger als ihr Bruder Hannes. Die beiden sind zusammen 30 Jahre alt.\n\nWie alt ist Sandra? Wie alt ist Hannes?",
-    name1: "Sandra",
-    name2: "Hannes",
-    sum: 30,
-    // Beziehung als: name2 = name1 + d  (Hannes = Sandra + 6)
-    d: 6
-  },
-  taschengeld: {
-    text: "Stefan und Thomas bekommen zusammen 21 € Taschengeld. Thomas bekommt um 3 € weniger als Stefan.\n\nWie viel Taschengeld erhält jeder Bub?",
-    name1: "Thomas",
-    name2: "Stefan",
-    sum: 21,
-    // Stefan = Thomas + 3  => name2 = name1 + 3
-    d: 3
-  },
-  wellensittiche: {
-    text: "Verena züchtet Wellensittiche. Sie hat 49 Vögel, die entweder grünes oder blaues Gefieder haben. Es sind um 7 blaue Vögel mehr als grüne.\n\nWie viele Vögel haben ein blaues Gefieder?",
-    name1: "grün",
-    name2: "blau",
-    sum: 49,
-    // blau = grün + 7
-    d: 7
-  },
-  hanni: {
-    text: "Hanni bekommt um 7 € mehr Taschengeld als Nanni. Zusammen erhalten sie 29 €.\n\nWie viel Taschengeld erhält jedes Mädchen?",
-    name1: "Nanni",
-    name2: "Hanni",
-    sum: 29,
-    // Hanni = Nanni + 7
-    d: 7
+    done[1]=true;
+    setFeedback(fb2,"good","✅ Schritt 2 ist korrekt!");
+    showSteps();
   }
-};
 
-let task = null; // {name1,name2,sum,d,text}
-let progress = { s1:false, s2:false, s3:false, s4:false, s5:false };
+  function checkStep3(){
+    hideFeedback(fb3);
+    h3.style.display="none";
 
-// UI refs
-const modeSel = document.getElementById("modeSel");
-const presetBox = document.getElementById("presetBox");
-const customBox = document.getElementById("customBox");
+    // must have expected expressions
+    if(!exprA || !exprB){
+      setFeedback(fb3,"bad","Bitte zuerst Schritt 2 korrekt abschließen.");
+      return;
+    }
 
-const taskSel = document.getElementById("taskSel");
-const loadBtn = document.getElementById("loadBtn");
-const taskText = document.getElementById("taskText");
+    const eq = parseLinearEquation(inpXEq.value);
+    if(!eq){
+      setFeedback(fb3,"bad",
+        "Das ist noch keine prüfbare Gleichung in x.\n" +
+        "Beispiel: x + (x+6) = " + task.sum
+      );
+      return;
+    }
 
-const cName1 = document.getElementById("cName1");
-const cName2 = document.getElementById("cName2");
-const cSum = document.getElementById("cSum");
-const cDiff = document.getElementById("cDiff");
-const applyCustomBtn = document.getElementById("applyCustomBtn");
-const customPreview = document.getElementById("customPreview");
+    // expected equation: exprA + exprB = sum
+    const expectedL = {a: exprA.a + exprB.a, b: exprA.b + exprB.b};
+    const expected = {L: expectedL, R: {a:0,b:task.sum}};
 
-const resetBtn = document.getElementById("resetBtn");
-const statusMsg = document.getElementById("statusMsg");
-const goalHint = document.getElementById("goalHint");
+    if(!equivalentLinearEq(eq, expected)){
+      setFeedback(fb3,"bad",
+        "Noch nicht korrekt eingesetzt.\n" +
+        "Tipp: Ersetze " + task.A + " und " + task.B + " durch deine Ausdrücke und behalte die Summe " + task.sum + ".\n" +
+        "Eine korrekte Form wäre z.B.: (" + exprToString(exprA) + ") + (" + exprToString(exprB) + ") = " + task.sum
+      );
+      return;
+    }
 
-const s1a = document.getElementById("s1a");
-const s1b = document.getElementById("s1b");
-const s1sum = document.getElementById("s1sum");
-const s1check = document.getElementById("s1check");
-const s1msg = document.getElementById("s1msg");
-const s1tag = document.getElementById("s1tag");
-
-const step2 = document.getElementById("step2");
-const xname1 = document.getElementById("xname1");
-const xname2 = document.getElementById("xname2");
-const s2lhs = document.getElementById("s2lhs");
-const s2expr = document.getElementById("s2expr");
-const s2check = document.getElementById("s2check");
-const s2msg = document.getElementById("s2msg");
-const s2tag = document.getElementById("s2tag");
-
-const step3 = document.getElementById("step3");
-const s3eq = document.getElementById("s3eq");
-const s3check = document.getElementById("s3check");
-const s3msg = document.getElementById("s3msg");
-const s3tag = document.getElementById("s3tag");
-
-const step4 = document.getElementById("step4");
-const s4x = document.getElementById("s4x");
-const s4check = document.getElementById("s4check");
-const s4msg = document.getElementById("s4msg");
-const s4tag = document.getElementById("s4tag");
-
-const step5 = document.getElementById("step5");
-const s5n1 = document.getElementById("s5n1");
-const s5n2 = document.getElementById("s5n2");
-const s5v1 = document.getElementById("s5v1");
-const s5v2 = document.getElementById("s5v2");
-const s5check = document.getElementById("s5check");
-const s5msg = document.getElementById("s5msg");
-const s5tag = document.getElementById("s5tag");
-
-const finalMsg = document.getElementById("finalMsg");
-
-function setMsg(el, kind, html){
-  el.className = "msg " + (kind || "");
-  el.innerHTML = html || "";
-}
-
-function lockStep(el, locked){
-  el.classList.toggle("locked", !!locked);
-}
-
-function setTag(el, text){
-  el.textContent = text;
-}
-
-function fillSelectors(){
-  const names = [task.name1, task.name2];
-  s1a.innerHTML = "";
-  s1b.innerHTML = "";
-  for(const n of names){
-    const o1 = document.createElement("option"); o1.value = n; o1.textContent = n;
-    const o2 = document.createElement("option"); o2.value = n; o2.textContent = n;
-    s1a.appendChild(o1); s1b.appendChild(o2);
+    done[2]=true;
+    setFeedback(fb3,"good","✅ Schritt 3 ist korrekt!");
+    showSteps();
   }
-  // default: name1 + name2
-  s1a.value = task.name1;
-  s1b.value = task.name2;
-  s1sum.value = task.sum;
-}
 
-function updateGoalHint(){
-  if(!task){
-    goalHint.textContent = "";
-    return;
+  function checkStep4(){
+    hideFeedback(fb4);
+    h4.style.display="none";
+
+    if(!exprA || !exprB){
+      setFeedback(fb4,"bad","Bitte zuerst Schritt 2 korrekt abschließen.");
+      return;
+    }
+
+    const val = Number(inpXVal.value);
+    if(!Number.isFinite(val)){
+      setFeedback(fb4,"bad","Bitte gib eine Zahl für x ein.");
+      return;
+    }
+
+    const sol = solveForX(exprA, exprB, task.sum);
+    if(!nearlyEqual(val, sol.x)){
+      setFeedback(fb4,"bad",
+        "Das stimmt noch nicht.\n" +
+        "Kontrolliere: Nach dem Einsetzen ergibt sich eine Gleichung mit 2x.\n" +
+        "Wenn du willst: Nutze den Hinweis-Button."
+      );
+      return;
+    }
+
+    done[3]=true;
+    setFeedback(fb4,"good","✅ Schritt 4 ist korrekt! x = " + sol.x);
+    showSteps();
   }
-  const dTxt = task.d >= 0 ? `+ ${task.d}` : `- ${Math.abs(task.d)}`;
-  goalHint.innerHTML = `
-    <b>Aufgaben-Daten</b><br/>
-    <span class="mono">${task.name1} + ${task.name2} = ${task.sum}</span><br/>
-    Beziehung: <span class="mono">${task.name2} = ${task.name1} ${dTxt}</span>
-  `;
-}
 
-function resetProgress(){
-  progress = { s1:false, s2:false, s3:false, s4:false, s5:false };
-  // clear inputs/messages
-  setMsg(s1msg, "", "");
-  setMsg(s2msg, "", "");
-  setMsg(s3msg, "", "");
-  setMsg(s4msg, "", "");
-  setMsg(s5msg, "", "");
-  s2expr.value = "";
-  s3eq.value = "";
-  s4x.value = "";
-  s5v1.value = "";
-  s5v2.value = "";
-  finalMsg.style.display = "none";
-  finalMsg.innerHTML = "";
+  function checkStep5(){
+    hideFeedback(fb5);
+    h5.style.display="none";
 
-  // lock later steps
-  lockStep(step2, true); setTag(s2tag,"gesperrt");
-  lockStep(step3, true); setTag(s3tag,"gesperrt");
-  lockStep(step4, true); setTag(s4tag,"gesperrt");
-  lockStep(step5, true); setTag(s5tag,"gesperrt");
+    if(!exprA || !exprB){
+      setFeedback(fb5,"bad","Bitte zuerst Schritt 2 korrekt abschließen.");
+      return;
+    }
+
+    const aVal = Number(inpAVal.value);
+    const bVal = Number(inpBVal.value);
+    if(!Number.isFinite(aVal) || !Number.isFinite(bVal)){
+      setFeedback(fb5,"bad","Bitte trage bei beiden Feldern Zahlen ein.");
+      return;
+    }
+
+    const sol = solveForX(exprA, exprB, task.sum);
+    if(!(nearlyEqual(aVal, sol.A) && nearlyEqual(bVal, sol.B))){
+      setFeedback(fb5,"bad",
+        "Noch nicht ganz.\n" +
+        "Kontrolliere, ob du die Werte für " + task.A + " und " + task.B + richtig aus x berechnet hast.\n" +
+        "Achtung: " + task.A + " und " + task.B + " nicht vertauschen."
+      );
+      return;
+    }
+
+    done[4]=true;
+    setFeedback(fb5,"good",
+      "🎉 Alles korrekt!\n" +
+      task.A + " = " + sol.A + " " + task.unit + "\n" +
+      task.B + " = " + sol.B + " " + task.unit
+    );
+    showSteps();
+  }
+
+  // ----------------------------
+  // Hinweise pro Schritt
+  // ----------------------------
+  function refreshHints(){
+    h1.textContent =
+      "Schreibe genau die Summe aus dem Text als Gleichung.\n" +
+      "Also: " + task.A + " + " + task.B + " = " + task.sum + "\n" +
+      "(Reihenfolge ist egal.)";
+
+    h2.textContent =
+      "Wenn x die erste Größe ist, dann ist die zweite oft x plus/minus die Differenz.\n" +
+      "Merke: „A ist um d weniger als B“ bedeutet A = B - d.\n" +
+      "Hier gilt: " + task.A + " = " + task.B + " " + (task.diff>=0 ? "+ " + task.diff : "- " + Math.abs(task.diff)) + ".";
+
+    h3.textContent =
+      "Nimm die Gleichung aus Schritt 1 und ersetze die Namen durch deine x-Ausdrücke.\n" +
+      "Beispiel: (" + task.A + ") wird zu (" + exprToString(exprA||{a:1,b:0}) + ").";
+
+    h4.textContent =
+      "Nach Schritt 3 steht etwas wie: 2x + Zahl = " + task.sum + "\n" +
+      "Dann: 2x = " + task.sum + " - Zahl\n" +
+      "Dann: x = (Ergebnis) / 2";
+
+    h5.textContent =
+      "Wenn du x hast, setze es in beide Ausdrücke ein.\n" +
+      task.A + " = " + (exprA ? exprToString(exprA) : "?") + "\n" +
+      task.B + " = " + (exprB ? exprToString(exprB) : "?");
+  }
+
+  // ----------------------------
+  // UI-Setup
+  // ----------------------------
+  function populateTasks(){
+    problemSelect.innerHTML = "";
+    TASKS.forEach((t,i)=>{
+      const opt = document.createElement("option");
+      opt.value = t.id;
+      opt.textContent = t.title;
+      problemSelect.appendChild(opt);
+    });
+  }
+
+  function renderTask(){
+    problemText.textContent =
+      task.text + "\n\n" +
+      "Gesucht: " + task.A + " und " + task.B + ".";
+    lblA.textContent = task.A + " (" + task.unit + ")";
+    lblB.textContent = task.B + " (" + task.unit + ")";
+    inpSumEq.value = "";
+    inpOtherExpr.value = "";
+    inpXEq.value = "";
+    inpXVal.value = "";
+    inpAVal.value = "";
+    inpBVal.value = "";
+
+    // x choices
+    xChoice.innerHTML = "";
+    const makeRadio = (value, label)=>{
+      const wrap = document.createElement("label");
+      wrap.className = "radio";
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = "xIs";
+      input.value = value;
+      const span = document.createElement("span");
+      span.textContent = label;
+      wrap.appendChild(input);
+      wrap.appendChild(span);
+      wrap.addEventListener("click", ()=>{
+        input.checked = true;
+        // update label for other expr
+        const other = (value==="A") ? task.B : task.A;
+        lblOtherExpr.textContent = other + " als Ausdruck in x";
+      });
+      return wrap;
+    };
+    xChoice.appendChild(makeRadio("A", "x = " + task.A));
+    xChoice.appendChild(makeRadio("B", "x = " + task.B));
+
+    lblOtherExpr.textContent = "Andere Größe als Ausdruck in x";
+
+    // reset feedback/hints
+    [fb1,fb2,fb3,fb4,fb5].forEach(hideFeedback);
+    [h1,h2,h3,h4,h5].forEach(el=>{el.style.display="none"; el.textContent="";});
+
+    teacherBox.textContent = "Erwartung (abhängig von deiner x-Wahl):\n\nSumme: " + task.A + " + " + task.B + " = " + task.sum + "\n\nWähle in Schritt 2, wer x ist, dann zeigt das Tool die erwartete Umformung.";
+
+    refreshHints();
+    updatePills();
+  }
+
+  function resetAll(){
+    done = [false,false,false,false,false];
+    xIs = "A";
+    exprA = null; exprB = null;
+    renderTask();
+    showSteps();
+  }
+
+  problemSelect.addEventListener("change", ()=>{
+    const id = problemSelect.value;
+    task = TASKS.find(t=>t.id===id) || TASKS[0];
+    resetAll();
+  });
+
+  // ----------------------------
+  // Init
+  // ----------------------------
+  populateTasks();
+  problemSelect.value = TASKS[0].id;
+  task = TASKS[0];
+  resetAll();
+
+  // keep hints fresh when expressions are known
+  const hintRefreshers = [inpOtherExpr, inpXEq, inpXVal, inpAVal, inpBVal];
+  hintRefreshers.forEach(el=>{
+    el.addEventListener("input", ()=>refreshHints());
+  });
+
+})();
+</script>
+</body>
+</html>
