@@ -299,4 +299,328 @@ function normalize(str){
     .replace(/,/g,"."); // falls jemand 2,5 eingibt
 }
 
-// Tokenizer: numbers,
+// Tokenizer: numbers, x, + - * ( ) =
+function tokenize(expr){
+  const s = normalize(expr);
+  const tokens = [];
+  let i = 0;
+  while(i < s.length){
+    const ch = s[i];
+
+    if(/[0-9.]/.test(ch)){
+      let j = i+1;
+      while(j < s.length && /[0-9.]/.test(s[j])) j++;
+      tokens.push({t:"num", v: parseFloat(s.slice(i,j))});
+      i = j;
+      continue;
+    }
+    if(ch === "x" || ch === "X"){
+      tokens.push({t:"var"});
+      i++;
+      continue;
+    }
+    if(ch === "+" || ch === "-" || ch === "*" || ch === "(" || ch === ")" || ch === "="){
+      tokens.push({t: ch});
+      i++;
+      continue;
+    }
+    // Unbekanntes Zeichen
+    return { ok:false, error:`Unbekanntes Zeichen: "${ch}"` };
+  }
+  return { ok:true, tokens };
+}
+
+// Wir rechnen mit Paaren {a,b} = a*x + b
+function add(p,q){ return {a:p.a+q.a, b:p.b+q.b}; }
+function sub(p,q){ return {a:p.a-q.a, b:p.b-q.b}; }
+function mul(p,q){
+  // (ax+b)(cx+d) ist nur linear, wenn mindestens einer der a/c = 0
+  if(p.a !== 0 && q.a !== 0) return { ok:false, error:"Nicht linear: x*x ist hier nicht erlaubt." };
+  return { ok:true, val: { a: p.a*q.b + q.a*p.b, b: p.b*q.b } };
+}
+
+function parseLinearExpr(expr){
+  const tok = tokenize(expr);
+  if(!tok.ok) return { ok:false, error: tok.error };
+
+  // Shunting-yard -> RPN
+  const output = [];
+  const ops = [];
+  const prec = { "+":1, "-":1, "*":2 };
+
+  // Hilfsfunktion: unary minus behandeln
+  // Wir wandeln "-( ... )" oder "-x" oder "-5" in "0 - (...)"
+  const tks = tok.tokens.slice();
+  const fixed = [];
+  for(let i=0;i<tks.length;i++){
+    const cur = tks[i];
+    const prev = fixed[fixed.length-1];
+    if(cur.t === "-" && (!prev || (prev.t === "+" || prev.t === "-" || prev.t === "*" || prev.t === "(" || prev.t === "="))){
+      fixed.push({t:"num", v:0});
+      fixed.push({t:"-"});
+      continue;
+    }
+    fixed.push(cur);
+  }
+
+  for(const token of fixed){
+    if(token.t === "num" || token.t === "var"){
+      output.push(token);
+    } else if(token.t === "+" || token.t === "-" || token.t === "*"){
+      while(ops.length){
+        const top = ops[ops.length-1];
+        if((top.t === "+" || top.t === "-" || top.t === "*") && prec[top.t] >= prec[token.t]){
+          output.push(ops.pop());
+        } else break;
+      }
+      ops.push(token);
+    } else if(token.t === "("){
+      ops.push(token);
+    } else if(token.t === ")"){
+      let found = false;
+      while(ops.length){
+        const top = ops.pop();
+        if(top.t === "("){ found = true; break; }
+        output.push(top);
+      }
+      if(!found) return { ok:false, error:"Klammerfehler: ) ohne (." };
+    } else if(token.t === "="){
+      return { ok:false, error:"In einen Term (Ausdruck) gehört kein '='." };
+    } else {
+      return { ok:false, error:"Token-Fehler." };
+    }
+  }
+  while(ops.length){
+    const top = ops.pop();
+    if(top.t === "(") return { ok:false, error:"Klammerfehler: ( ohne )." };
+    output.push(top);
+  }
+
+  // RPN auswerten
+  const st = [];
+  for(const token of output){
+    if(token.t === "num") st.push({a:0, b:token.v});
+    else if(token.t === "var") st.push({a:1, b:0});
+    else if(token.t === "+" || token.t === "-" || token.t === "*"){
+      if(st.length < 2) return { ok:false, error:"Ausdruck unvollständig." };
+      const q = st.pop();
+      const p = st.pop();
+      if(token.t === "+") st.push(add(p,q));
+      if(token.t === "-") st.push(sub(p,q));
+      if(token.t === "*"){
+        const m = mul(p,q);
+        if(!m.ok) return { ok:false, error:m.error };
+        st.push(m.val);
+      }
+    }
+  }
+  if(st.length !== 1) return { ok:false, error:"Ausdruck konnte nicht eindeutig ausgewertet werden." };
+  const res = st[0];
+  if(!isFinite(res.a) || !isFinite(res.b)) return { ok:false, error:"Ungültige Zahl im Ausdruck." };
+  return { ok:true, val:res };
+}
+
+function parseLinearEquation(eqStr){
+  const s = normalize(eqStr);
+  const idx = s.indexOf("=");
+  if(idx < 0) return { ok:false, error:"Bitte eine Gleichung mit '=' eingeben." };
+  if(s.indexOf("=", idx+1) !== -1) return { ok:false, error:"Bitte nur ein '=' verwenden." };
+  const left = s.slice(0, idx);
+  const right = s.slice(idx+1);
+  if(!left || !right) return { ok:false, error:"Links und rechts vom '=' muss etwas stehen." };
+
+  const L = parseLinearExpr(left);
+  if(!L.ok) return { ok:false, error:"Links: " + L.error };
+  const R = parseLinearExpr(right);
+  if(!R.ok) return { ok:false, error:"Rechts: " + R.error };
+  return { ok:true, left:L.val, right:R.val };
+}
+
+// Gleichungen sind äquivalent, wenn (L-R) gleiche Koeffizienten hat (bis auf Faktor).
+// Hier reicht: Beide Gleichungen linear -> L-R ergibt ax+b=0. Wir vergleichen (a,b) proportional.
+function equivalentEq(eqA, eqB){
+  // eq: {left:{a,b}, right:{a,b}}
+  const a1 = eqA.left.a - eqA.right.a;
+  const b1 = eqA.left.b - eqA.right.b;
+  const a2 = eqB.left.a - eqB.right.a;
+  const b2 = eqB.left.b - eqB.right.b;
+
+  // beide 0?
+  if(a1===0 && b1===0 && a2===0 && b2===0) return true;
+
+  // proportionaler Vergleich: (a1,b1) = k*(a2,b2)
+  // falls (a2,b2)=(0,0) aber (a1,b1) nicht -> false
+  if(a2===0 && b2===0) return false;
+
+  // wähle k anhand der ersten nicht-Null-Komponente
+  let k = null;
+  if(a2 !== 0) k = a1 / a2;
+  else k = b1 / b2;
+
+  const eps = 1e-9;
+  return Math.abs(a1 - k*a2) < eps && Math.abs(b1 - k*b2) < eps;
+}
+
+/* =========================================================
+   Aufgaben-Logik
+   ========================================================= */
+
+const presets = {
+  sandra: {
+    text: "Sandra ist um 6 Jahre jünger als ihr Bruder Hannes. Die beiden sind zusammen 30 Jahre alt.\n\nWie alt ist Sandra? Wie alt ist Hannes?",
+    name1: "Sandra",
+    name2: "Hannes",
+    sum: 30,
+    // Beziehung als: name2 = name1 + d  (Hannes = Sandra + 6)
+    d: 6
+  },
+  taschengeld: {
+    text: "Stefan und Thomas bekommen zusammen 21 € Taschengeld. Thomas bekommt um 3 € weniger als Stefan.\n\nWie viel Taschengeld erhält jeder Bub?",
+    name1: "Thomas",
+    name2: "Stefan",
+    sum: 21,
+    // Stefan = Thomas + 3  => name2 = name1 + 3
+    d: 3
+  },
+  wellensittiche: {
+    text: "Verena züchtet Wellensittiche. Sie hat 49 Vögel, die entweder grünes oder blaues Gefieder haben. Es sind um 7 blaue Vögel mehr als grüne.\n\nWie viele Vögel haben ein blaues Gefieder?",
+    name1: "grün",
+    name2: "blau",
+    sum: 49,
+    // blau = grün + 7
+    d: 7
+  },
+  hanni: {
+    text: "Hanni bekommt um 7 € mehr Taschengeld als Nanni. Zusammen erhalten sie 29 €.\n\nWie viel Taschengeld erhält jedes Mädchen?",
+    name1: "Nanni",
+    name2: "Hanni",
+    sum: 29,
+    // Hanni = Nanni + 7
+    d: 7
+  }
+};
+
+let task = null; // {name1,name2,sum,d,text}
+let progress = { s1:false, s2:false, s3:false, s4:false, s5:false };
+
+// UI refs
+const modeSel = document.getElementById("modeSel");
+const presetBox = document.getElementById("presetBox");
+const customBox = document.getElementById("customBox");
+
+const taskSel = document.getElementById("taskSel");
+const loadBtn = document.getElementById("loadBtn");
+const taskText = document.getElementById("taskText");
+
+const cName1 = document.getElementById("cName1");
+const cName2 = document.getElementById("cName2");
+const cSum = document.getElementById("cSum");
+const cDiff = document.getElementById("cDiff");
+const applyCustomBtn = document.getElementById("applyCustomBtn");
+const customPreview = document.getElementById("customPreview");
+
+const resetBtn = document.getElementById("resetBtn");
+const statusMsg = document.getElementById("statusMsg");
+const goalHint = document.getElementById("goalHint");
+
+const s1a = document.getElementById("s1a");
+const s1b = document.getElementById("s1b");
+const s1sum = document.getElementById("s1sum");
+const s1check = document.getElementById("s1check");
+const s1msg = document.getElementById("s1msg");
+const s1tag = document.getElementById("s1tag");
+
+const step2 = document.getElementById("step2");
+const xname1 = document.getElementById("xname1");
+const xname2 = document.getElementById("xname2");
+const s2lhs = document.getElementById("s2lhs");
+const s2expr = document.getElementById("s2expr");
+const s2check = document.getElementById("s2check");
+const s2msg = document.getElementById("s2msg");
+const s2tag = document.getElementById("s2tag");
+
+const step3 = document.getElementById("step3");
+const s3eq = document.getElementById("s3eq");
+const s3check = document.getElementById("s3check");
+const s3msg = document.getElementById("s3msg");
+const s3tag = document.getElementById("s3tag");
+
+const step4 = document.getElementById("step4");
+const s4x = document.getElementById("s4x");
+const s4check = document.getElementById("s4check");
+const s4msg = document.getElementById("s4msg");
+const s4tag = document.getElementById("s4tag");
+
+const step5 = document.getElementById("step5");
+const s5n1 = document.getElementById("s5n1");
+const s5n2 = document.getElementById("s5n2");
+const s5v1 = document.getElementById("s5v1");
+const s5v2 = document.getElementById("s5v2");
+const s5check = document.getElementById("s5check");
+const s5msg = document.getElementById("s5msg");
+const s5tag = document.getElementById("s5tag");
+
+const finalMsg = document.getElementById("finalMsg");
+
+function setMsg(el, kind, html){
+  el.className = "msg " + (kind || "");
+  el.innerHTML = html || "";
+}
+
+function lockStep(el, locked){
+  el.classList.toggle("locked", !!locked);
+}
+
+function setTag(el, text){
+  el.textContent = text;
+}
+
+function fillSelectors(){
+  const names = [task.name1, task.name2];
+  s1a.innerHTML = "";
+  s1b.innerHTML = "";
+  for(const n of names){
+    const o1 = document.createElement("option"); o1.value = n; o1.textContent = n;
+    const o2 = document.createElement("option"); o2.value = n; o2.textContent = n;
+    s1a.appendChild(o1); s1b.appendChild(o2);
+  }
+  // default: name1 + name2
+  s1a.value = task.name1;
+  s1b.value = task.name2;
+  s1sum.value = task.sum;
+}
+
+function updateGoalHint(){
+  if(!task){
+    goalHint.textContent = "";
+    return;
+  }
+  const dTxt = task.d >= 0 ? `+ ${task.d}` : `- ${Math.abs(task.d)}`;
+  goalHint.innerHTML = `
+    <b>Aufgaben-Daten</b><br/>
+    <span class="mono">${task.name1} + ${task.name2} = ${task.sum}</span><br/>
+    Beziehung: <span class="mono">${task.name2} = ${task.name1} ${dTxt}</span>
+  `;
+}
+
+function resetProgress(){
+  progress = { s1:false, s2:false, s3:false, s4:false, s5:false };
+  // clear inputs/messages
+  setMsg(s1msg, "", "");
+  setMsg(s2msg, "", "");
+  setMsg(s3msg, "", "");
+  setMsg(s4msg, "", "");
+  setMsg(s5msg, "", "");
+  s2expr.value = "";
+  s3eq.value = "";
+  s4x.value = "";
+  s5v1.value = "";
+  s5v2.value = "";
+  finalMsg.style.display = "none";
+  finalMsg.innerHTML = "";
+
+  // lock later steps
+  lockStep(step2, true); setTag(s2tag,"gesperrt");
+  lockStep(step3, true); setTag(s3tag,"gesperrt");
+  lockStep(step4, true); setTag(s4tag,"gesperrt");
+  lockStep(step5, true); setTag(s5tag,"gesperrt");
