@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Gleichungen Schritt für Schritt (DING1 + DING2)</title>
+  <style>
+    :root{
+      --bg:#0b1020; --card:#111a33; --card2:#0f1730;
+      --text:#eef2ff; --muted:#b7c0ff;
+      --ok:#22c55e; --bad:#ef4444; --warn:#f59e0b;
+      --border:rgba(255,255,255,.12);
+      --shadow: 0 12px 28px rgba(0,0,0,.35);
+      --radius:18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    body{margin:0;background:radial-gradient(1200px 800px at 10% 10%, #182459 0%, var(--bg) 55%, #060913 100%);color:var(--text);font-family:var(--sans);}
+    .wrap{max-width:980px;margin:0 auto;padding:20px 16px 60px;}
+    header{display:flex;gap:14px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;margin-bottom:16px}
+    h1{margin:0;font-size:22px;letter-spacing:.2px}
+    .sub{margin:6px 0 0;color:var(--muted);line-height:1.35}
+    .grid{display:grid;grid-template-columns: 1.1fr .9fr;gap:14px;margin-top:14px}
+    @media (max-width: 900px){.grid{grid-template-columns:1fr}}
+    .card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px}
+    .card h2{margin:0 0 10px;font-size:16px}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    label{font-size:13px;color:var(--muted)}
+    input, select, button, textarea{
+      font-family:var(--sans);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:10px 12px;
+      outline:none;
+    }
+    input:focus, select:focus, textarea:focus{border-color:rgba(183,192,255,.55); box-shadow: 0 0 0 4px rgba(183,192,255,.12);}
+    textarea{width:100%;min-height:110px;resize:vertical;line-height:1.35}
+    .mono{font-family:var(--mono)}
+    button{
+      cursor:pointer;
+      background:rgba(183,192,255,.14);
+      border-color:rgba(183,192,255,.22);
+      transition:.15s transform, .15s background;
+    }
+    button:hover{background:rgba(183,192,255,.20)}
+    button:active{transform:translateY(1px)}
+    .btn2{background:rgba(34,197,94,.16);border-color:rgba(34,197,94,.30)}
+    .btn2:hover{background:rgba(34,197,94,.22)}
+    .btnBad{background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.25)}
+    .btnBad:hover{background:rgba(239,68,68,.20)}
+    .pill{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--border);border-radius:999px;padding:8px 10px;background:rgba(255,255,255,.05)}
+    .pill strong{font-size:12px}
+    .msg{margin-top:10px;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.05);line-height:1.35}
+    .ok{border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.10)}
+    .bad{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.10)}
+    .warn{border-color:rgba(245,158,11,.35);background:rgba(245,158,11,.10)}
+    .step{border:1px dashed rgba(183,192,255,.25);border-radius:var(--radius);padding:12px;margin-top:12px}
+    .stepHead{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+    .stepHead .title{font-weight:700}
+    .small{font-size:12px;color:var(--muted)}
+    .locked{opacity:.55;pointer-events:none}
+    .eqBox{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+    .eqBox input{min-width:220px}
+    .spacer{height:6px}
+    .hr{height:1px;background:rgba(255,255,255,.10);margin:12px 0}
+    .hint{color:var(--muted);font-size:13px;line-height:1.35}
+    .kbd{font-family:var(--mono);font-size:12px;padding:2px 6px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.18)}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width: 600px){.two{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Gleichungen Schritt für Schritt: <span class="mono">DING1 + DING2 = SUMME</span></h1>
+      <div class="sub">
+        Ziel: Jede Aufgabe wird in kleine Schritte zerlegt. Jeder Schritt wird überprüft und du bekommst sofort Feedback.<br/>
+        Erlaubte Eingaben bei Ausdrücken: Zahlen, <span class="kbd">x</span>, <span class="kbd">+</span>, <span class="kbd">-</span>, <span class="kbd">*</span>, Klammern. Beispiele: <span class="kbd">x+6</span>, <span class="kbd">2*x-3</span>, <span class="kbd">(x-6)+x</span>
+      </div>
+    </div>
+    <div class="pill">
+      <strong>Modus</strong>
+      <select id="modeSel" aria-label="Modus">
+        <option value="preset" selected>Aufgaben (vorgegeben)</option>
+        <option value="custom">Eigene Aufgabe</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Aufgabe</h2>
+
+      <div id="presetBox">
+        <div class="row">
+          <label for="taskSel">Wähle eine Aufgabe:</label>
+          <select id="taskSel">
+            <option value="sandra">Sandra &amp; Hannes (Alter)</option>
+            <option value="taschengeld">Stefan &amp; Thomas (Taschengeld)</option>
+            <option value="wellensittiche">Verena (Wellensittiche)</option>
+            <option value="hanni">Hanni &amp; Nanni (Taschengeld)</option>
+          </select>
+          <button id="loadBtn">Laden</button>
+        </div>
+        <div class="spacer"></div>
+        <textarea id="taskText" readonly></textarea>
+      </div>
+
+      <div id="customBox" style="display:none">
+        <div class="hint">
+          Für „Eigene Aufgabe“ gibst du nur die Struktur an:
+          <ul>
+            <li><b>DING1</b> und <b>DING2</b> (Bezeichnungen)</li>
+            <li><b>SUMME</b> (Zahl)</li>
+            <li><b>Unterschied</b>: „DING2 ist um d mehr als DING1“ (d kann auch negativ sein)</li>
+          </ul>
+          Beispiel: DING1=Sandra, DING2=Hannes, SUMME=30, d=6 (Hannes ist um 6 mehr als Sandra).
+        </div>
+        <div class="two">
+          <div>
+            <label>DING1</label>
+            <input id="cName1" placeholder="z.B. Sandra" value="Sandra" />
+          </div>
+          <div>
+            <label>DING2</label>
+            <input id="cName2" placeholder="z.B. Hannes" value="Hannes" />
+          </div>
+          <div>
+            <label>SUMME</label>
+            <input id="cSum" type="number" step="1" value="30" />
+          </div>
+          <div>
+            <label>Unterschied d (DING2 = DING1 + d)</label>
+            <input id="cDiff" type="number" step="1" value="6" />
+          </div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button id="applyCustomBtn" class="btn2">Eigene Aufgabe übernehmen</button>
+        </div>
+        <div class="spacer"></div>
+        <textarea id="customPreview" readonly></textarea>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="row">
+        <button id="resetBtn" class="btnBad">Alles zurücksetzen</button>
+        <span class="small">Tipp: Wenn du stecken bleibst, schau in die Hinweise pro Schritt.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Status</h2>
+      <div class="msg" id="statusMsg">
+        Lade eine Aufgabe oder erstelle eine eigene Aufgabe, dann starte mit Schritt 1.
+      </div>
+      <div class="hr"></div>
+      <div class="hint" id="goalHint"></div>
+      <div class="hr"></div>
+      <div class="hint">
+        <b>Wichtig:</b> In diesem Tool geht es nicht nur um das Ergebnis, sondern um die <b>korrekten Schritte</b>.
+        Jede Aufgabe folgt dem Muster:
+        <div class="mono" style="margin-top:8px">
+          DING1 + DING2 = SUMME<br/>
+          DING2 = DING1 + d
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2>Schritte</h2>
+
+    <!-- Schritt 1 -->
+    <div class="step" id="step1">
+      <div class="stepHead">
+        <div class="title">Schritt 1: Allgemeine Gleichung aufschreiben</div>
+        <div class="small" id="s1tag">offen</div>
+      </div>
+
+      <div class="hint">
+        Schreibe die Grundgleichung als: <span class="mono">DING1 + DING2 = SUMME</span><br/>
+        Nutze die Dropdowns und trage die Summe ein.
+      </div>
+
+      <div class="eqBox">
+        <select id="s1a"></select>
+        <span class="mono">+</span>
+        <select id="s1b"></select>
+        <span class="mono">=</span>
+        <input id="s1sum" type="number" step="1" />
+        <button id="s1check">Prüfen</button>
+      </div>
+      <div class="msg" id="s1msg"></div>
+    </div>
+
+    <!-- Schritt 2 -->
+    <div class="step locked" id="step2">
+      <div class="stepHead">
+        <div class="title">Schritt 2: Eine Variable festlegen und Beziehung als Ausdruck</div>
+        <div class="small" id="s2tag">gesperrt</div>
+      </div>
+
+      <div class="hint">
+        Lege fest, wer <span class="kbd">x</span> ist. Dann drücke die Beziehung aus.<br/>
+        Beispiel „Hannes ist um 6 älter“: Wenn Sandra = x, dann Hannes = x+6.
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <label>Setze <span class="kbd">x</span> für:</label>
+        <label><input type="radio" name="xfor" value="1" checked /> <span id="xname1"></span></label>
+        <label><input type="radio" name="xfor" value="2" /> <span id="xname2"></span></label>
+      </div>
+
+      <div class="eqBox">
+        <span class="mono" id="s2lhs"></span>
+        <span class="mono">=</span>
+        <input id="s2expr" class="mono" placeholder="z.B. x+6 oder x-3" />
+        <button id="s2check">Prüfen</button>
+      </div>
+      <div class="msg" id="s2msg"></div>
+    </div>
+
+    <!-- Schritt 3 -->
+    <div class="step locked" id="step3">
+      <div class="stepHead">
+        <div class="title">Schritt 3: Ganze Gleichung aufstellen (Summe einsetzen)</div>
+        <div class="small" id="s3tag">gesperrt</div>
+      </div>
+
+      <div class="hint">
+        Setze deine Ausdrücke aus Schritt 2 in <span class="mono">DING1 + DING2 = SUMME</span> ein.<br/>
+        Du darfst umformen (z.B. <span class="kbd">x+(x+6)=30</span> oder <span class="kbd">2*x+6=30</span>).
+      </div>
+
+      <div class="eqBox">
+        <input id="s3eq" class="mono" placeholder="z.B. x+(x+6)=30" />
+        <button id="s3check">Prüfen</button>
+      </div>
+      <div class="msg" id="s3msg"></div>
+    </div>
+
+    <!-- Schritt 4 -->
+    <div class="step locked" id="step4">
+      <div class="stepHead">
+        <div class="title">Schritt 4: Gleichung lösen (x berechnen)</div>
+        <div class="small" id="s4tag">gesperrt</div>
+      </div>
+
+      <div class="hint">
+        Löse nach <span class="kbd">x</span> auf und gib den Wert ein. (Zahl eingeben)
+      </div>
+
+      <div class="eqBox">
+        <span class="mono">x =</span>
+        <input id="s4x" type="number" step="1" />
+        <button id="s4check">Prüfen</button>
+      </div>
+      <div class="msg" id="s4msg"></div>
+    </div>
+
+    <!-- Schritt 5 -->
+    <div class="step locked" id="step5">
+      <div class="stepHead">
+        <div class="title">Schritt 5: Beide Werte berechnen</div>
+        <div class="small" id="s5tag">gesperrt</div>
+      </div>
+
+      <div class="hint">
+        Setze <span class="kbd">x</span> in deine Ausdrücke ein und gib die beiden Ergebnisse ein.
+      </div>
+
+      <div class="eqBox">
+        <span class="mono" id="s5n1"></span>
+        <input id="s5v1" type="number" step="1" />
+        <span class="mono" id="s5n2"></span>
+        <input id="s5v2" type="number" step="1" />
+        <button id="s5check">Prüfen</button>
+      </div>
+      <div class="msg" id="s5msg"></div>
+    </div>
+
+    <div class="hr"></div>
+    <div class="msg" id="finalMsg" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   Mini-Parser für lineare Terme ax + b (mit +, -, *, Klammern)
+   ========================================================= */
+
+function normalize(str){
+  return String(str || "")
+    .replace(/\s+/g,"")
+    .replace(/,/g,"."); // falls jemand 2,5 eingibt
+}
+
+// Tokenizer: numbers,
