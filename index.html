@@ -20,12 +20,8 @@
       padding:24px;
     }
     .wrap{width:min(980px,100%); display:grid; gap:16px}
-    .top{
-      display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;
-    }
-    .title{
-      display:flex; flex-direction:column; gap:4px;
-    }
+    .top{display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;}
+    .title{display:flex; flex-direction:column; gap:4px;}
     h1{font-size:18px; margin:0; letter-spacing:.2px}
     .sub{color:var(--muted); font-size:13px}
     .card{
@@ -35,10 +31,7 @@
       padding:16px;
       box-shadow:0 12px 28px rgba(0,0,0,.35);
     }
-    .grid{
-      display:grid; gap:16px;
-      grid-template-columns: 1.1fr .9fr;
-    }
+    .grid{display:grid; gap:16px; grid-template-columns: 1.1fr .9fr;}
     @media (max-width: 860px){ .grid{grid-template-columns:1fr} }
     .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
     .pill{
@@ -49,11 +42,7 @@
       height:10px; background:rgba(7,10,20,.55);
       border:1px solid var(--line); border-radius:999px; overflow:hidden;
     }
-    .bar{
-      height:100%; width:0%;
-      background:linear-gradient(90deg, rgba(34,197,94,.95), rgba(34,197,94,.55));
-      transition:width .25s ease;
-    }
+    .bar{height:100%; width:0%; background:linear-gradient(90deg, rgba(34,197,94,.95), rgba(34,197,94,.55)); transition:width .25s ease;}
     label{font-size:13px; color:var(--muted)}
     input[type="text"], input[type="number"], select{
       width:100%;
@@ -77,8 +66,6 @@
     }
     .btn:active{transform:scale(.99)}
     .btn.secondary{background:var(--btn2); font-weight:600}
-    .btn.good{background:rgba(34,197,94,.18); border-color:rgba(34,197,94,.5)}
-    .btn.bad{background:rgba(239,68,68,.14); border-color:rgba(239,68,68,.45)}
     .btn:disabled{opacity:.5; cursor:not-allowed}
     .stepTitle{font-size:15px; margin:0 0 6px 0}
     .hint{
@@ -87,6 +74,7 @@
       color:#ffe8b3;
       padding:10px 12px; border-radius:12px;
       font-size:13px;
+      white-space:pre-line;
     }
     .feedback{
       padding:10px 12px; border-radius:12px;
@@ -98,7 +86,6 @@
     }
     .feedback.good{border-color:rgba(34,197,94,.5); background:rgba(34,197,94,.10)}
     .feedback.bad{border-color:rgba(239,68,68,.45); background:rgba(239,68,68,.10)}
-    .feedback.warn{border-color:rgba(245,158,11,.45); background:rgba(245,158,11,.10)}
     .mono{font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
     .small{font-size:12px; color:var(--muted)}
     .divider{height:1px; background:rgba(36,48,85,.8); margin:12px 0}
@@ -116,7 +103,6 @@
     }
     .radio input{transform:translateY(1px)}
     .footerNote{font-size:12px; color:var(--muted); line-height:1.35}
-    a{color:#c7d2fe}
   </style>
 </head>
 <body>
@@ -155,7 +141,6 @@
 
         <div id="problemText" class="feedback" style="margin-bottom:12px;"></div>
 
-        <!-- STEP 1 -->
         <section id="step1">
           <h2 class="stepTitle">Schritt 1: Allgemeine Summe aufschreiben</h2>
           <div class="small">Schreibe die Summe als Gleichung, z.B. <span class="mono">Sandra + Hannes = 30</span></div>
@@ -171,7 +156,6 @@
           <div id="h1" class="hint" style="margin-top:12px; display:none;"></div>
         </section>
 
-        <!-- STEP 2 -->
         <section id="step2" style="display:none;">
           <h2 class="stepTitle">Schritt 2: Lege fest, was <span class="mono">x</span> bedeutet</h2>
           <div class="small">Wähle eine Größe als <span class="mono">x</span>. Dann gib die andere Größe als <span class="mono">x ± Zahl</span> an.</div>
@@ -196,7 +180,6 @@
           <div id="h2" class="hint" style="margin-top:12px; display:none;"></div>
         </section>
 
-        <!-- STEP 3 -->
         <section id="step3" style="display:none;">
           <h2 class="stepTitle">Schritt 3: Einsetzen und Gleichung in <span class="mono">x</span> aufstellen</h2>
           <div class="small">Setze deine Ausdrücke in die Summe ein, z.B. <span class="mono">x + (x+6) = 30</span></div>
@@ -214,7 +197,6 @@
           <div id="h3" class="hint" style="margin-top:12px; display:none;"></div>
         </section>
 
-        <!-- STEP 4 -->
         <section id="step4" style="display:none;">
           <h2 class="stepTitle">Schritt 4: Löse nach <span class="mono">x</span></h2>
           <div class="small">Gib den Wert für <span class="mono">x</span> ein (nur Zahl).</div>
@@ -232,7 +214,6 @@
           <div id="h4" class="hint" style="margin-top:12px; display:none;"></div>
         </section>
 
-        <!-- STEP 5 -->
         <section id="step5" style="display:none;">
           <h2 class="stepTitle">Schritt 5: Werte für beide Größen angeben</h2>
           <div class="small">Trage die beiden Ergebnisse ein.</div>
@@ -262,78 +243,55 @@
           Tipp: Dieses Tool prüft „gleichwertige“ Eingaben (z.B. <span class="mono">x+(x+6)=30</span> ist okay).
           Es ist absichtlich simpel gehalten (nur lineare Ausdrücke mit <span class="mono">x</span>).
         </div>
+
+        <div class="divider"></div>
+        <div id="debugBox" class="feedback" style="display:none;"></div>
       </div>
 
       <div class="card">
         <h2 class="stepTitle">Lehrkraft-Ansicht (automatisch)</h2>
-        <div class="small">Hier siehst du, was das Tool als korrekt erwartet (wird erst sinnvoll, nachdem Schritt 2 gewählt wurde).</div>
-
+        <div class="small">Zeigt die erwarteten Ausdrücke/Lösung (nach Schritt 2).</div>
         <div class="divider"></div>
-
-        <div class="feedback" id="teacherBox">
-          <span class="small">Wähle eine Aufgabe und starte.</span>
-        </div>
+        <div class="feedback" id="teacherBox"><span class="small">Wähle eine Aufgabe und starte.</span></div>
       </div>
     </div>
   </div>
 
 <script>
-(function(){
-  // ----------------------------
-  // Aufgaben-Daten
-  // Struktur:
-  // A und B sind die zwei "Dinge"
-  // sum = A + B
-  // relation: A = B + diff  (diff kann negativ sein)
-  // Beispiel "A ist 6 jünger als B" => A = B - 6 => diff = -6
-  // Beispiel "A ist 7 mehr als B"   => A = B + 7 => diff = +7
-  // ----------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  // Falls irgendwo ein Fehler passiert: im Debug-Feld anzeigen (hilft auf GitHub extrem)
+  const debugBox = document.getElementById("debugBox");
+  window.addEventListener("error", (e) => {
+    debugBox.style.display = "block";
+    debugBox.className = "feedback bad";
+    debugBox.textContent =
+      "JS-Fehler:\n" + (e.message || "Unbekannt") +
+      "\n\nDatei: " + (e.filename || "?") +
+      "\nZeile: " + (e.lineno || "?");
+  });
+
   const TASKS = [
-    {
-      id:"sandra-hannes",
-      title:"Sandra & Hannes (Alter)",
+    { id:"sandra-hannes", title:"Sandra & Hannes (Alter)",
       text:"Sandra ist um 6 Jahre jünger als ihr Bruder Hannes. Die beiden sind zusammen 30 Jahre alt.",
-      A:"Sandra", B:"Hannes", sum:30,
-      diff: -6, // A = B - 6
-      unit:"Jahre"
-    },
-    {
-      id:"stefan-thomas",
-      title:"Stefan & Thomas (Taschengeld)",
+      A:"Sandra", B:"Hannes", sum:30, diff:-6, unit:"Jahre" },
+    { id:"stefan-thomas", title:"Stefan & Thomas (Taschengeld)",
       text:"Stefan und Thomas bekommen zusammen 21 € Taschengeld. Thomas bekommt um 3 € weniger als Stefan.",
-      A:"Thomas", B:"Stefan", sum:21,
-      diff: -3, // A = B - 3 (Thomas weniger)
-      unit:"€"
-    },
-    {
-      id:"verena-wellensittiche",
-      title:"Wellensittiche (blau/grün)",
+      A:"Thomas", B:"Stefan", sum:21, diff:-3, unit:"€" },
+    { id:"verena-wellensittiche", title:"Wellensittiche (blau/grün)",
       text:"Verena züchtet Wellensittiche. Sie hat 49 Vögel, die entweder grünes oder blaues Gefieder haben. Es sind um 7 blaue Vögel mehr als grüne.",
-      A:"Blau", B:"Grün", sum:49,
-      diff: +7, // Blau = Grün + 7
-      unit:"Vögel"
-    },
-    {
-      id:"hanni-nanni",
-      title:"Hanni & Nanni (Taschengeld)",
+      A:"Blau", B:"Grün", sum:49, diff:+7, unit:"Vögel" },
+    { id:"hanni-nanni", title:"Hanni & Nanni (Taschengeld)",
       text:"Hanni bekommt um 7 € mehr Taschengeld als Nanni. Zusammen erhalten sie 29 €.",
-      A:"Hanni", B:"Nanni", sum:29,
-      diff: +7, // Hanni = Nanni + 7
-      unit:"€"
-    }
+      A:"Hanni", B:"Nanni", sum:29, diff:+7, unit:"€" },
   ];
 
-  // ----------------------------
   // DOM
-  // ----------------------------
   const problemSelect = document.getElementById("problemSelect");
   const problemText = document.getElementById("problemText");
-
   const pillProblem = document.getElementById("pillProblem");
   const pillStep = document.getElementById("pillStep");
   const progressBar = document.getElementById("progressBar");
   const progressText = document.getElementById("progressText");
-
   const teacherBox = document.getElementById("teacherBox");
 
   const step1 = document.getElementById("step1");
@@ -354,8 +312,6 @@
   const xChoice = document.getElementById("xChoice");
   const lblOtherExpr = document.getElementById("lblOtherExpr");
 
-  const btnNew = document.getElementById("btnNew");
-
   const fb1 = document.getElementById("fb1");
   const fb2 = document.getElementById("fb2");
   const fb3 = document.getElementById("fb3");
@@ -368,7 +324,228 @@
   const h4 = document.getElementById("h4");
   const h5 = document.getElementById("h5");
 
-  // Buttons
+  // Zustand
+  let task = TASKS[0];
+  let done = [false,false,false,false,false];
+  let xIs = "A";
+  let exprA = null, exprB = null;
+
+  // UI helpers
+  function setFeedback(el, kind, text){
+    el.style.display = "block";
+    el.className = "feedback " + (kind || "");
+    el.textContent = text;
+  }
+  function hideFeedback(el){ el.style.display="none"; el.textContent=""; el.className="feedback"; }
+  function toggleHint(n){
+    const map = {1:h1,2:h2,3:h3,4:h4,5:h5};
+    const el = map[n];
+    el.style.display = (el.style.display === "none" ? "block" : "none");
+  }
+
+  function updatePills(){
+    pillProblem.textContent = "Problem: " + task.title;
+    const stepNum = currentStepIndex()+1;
+    pillStep.textContent = "Schritt: " + stepNum + " / 5";
+  }
+  function updateProgress(){
+    const count = done.filter(Boolean).length;
+    progressText.textContent = count + " / 5 erledigt";
+    progressBar.style.width = (count/5*100) + "%";
+  }
+  function currentStepIndex(){
+    for(let i=0;i<done.length;i++) if(!done[i]) return i;
+    return 4;
+  }
+
+  function showSteps(){
+    step1.style.display = done[0] ? "none" : "block";
+    step2.style.display = (done[0] && !done[1]) ? "block" : "none";
+    step3.style.display = (done[0] && done[1] && !done[2]) ? "block" : "none";
+    step4.style.display = (done[0] && done[1] && done[2] && !done[3]) ? "block" : "none";
+    step5.style.display = (done[0] && done[1] && done[2] && done[3]) ? "block" : "none";
+    updatePills();
+    updateProgress();
+    updateTeacherBox();
+  }
+
+  // Parsing/math (gleich wie zuvor, nur kompakt übernommen)
+  function normalize(s){ return (s||"").toLowerCase().replace(/\s+/g,"").replace(/,/g,"."); }
+  function isBalanced(s){ let d=0; for(const ch of s){ if(ch==="(") d++; if(ch===")") d--; if(d<0) return false; } return d===0; }
+  function parseLinear(expr){
+    let s = normalize(expr);
+    while(s.startsWith("(") && s.endsWith(")")){
+      const inner=s.slice(1,-1);
+      if(isBalanced(inner)) s=inner; else break;
+    }
+    if(s.includes("*")||s.includes("/")||s.includes("^")) return null;
+    if(s.startsWith("+")) s=s.slice(1);
+
+    const isNumber = (t)=>/^[-+]?\d+(\.\d+)?$/.test(t);
+    const isX = (t)=> t==="x" || t==="+x" || t==="-x";
+
+    const parts=[]; let cur="";
+    for(let i=0;i<s.length;i++){
+      const ch=s[i];
+      if((ch==="+"||ch==="-" ) && i>0){ parts.push(cur); cur=ch; }
+      else cur+=ch;
+    }
+    if(cur) parts.push(cur);
+
+    let a=0,b=0;
+    for(const p of parts){
+      if(p==="") continue;
+      if(isX(p)){ a += (p.startsWith("-") ? -1 : 1); continue; }
+      if(p.endsWith("x") && isNumber(p.slice(0,-1))){ a += Number(p.slice(0,-1)); continue; }
+      if(isNumber(p)){ b += Number(p); continue; }
+      return null;
+    }
+    return {a,b};
+  }
+  function nearlyEqual(x,y){ return Math.abs(x-y) < 1e-9; }
+  function exprToString(e){
+    if(!e) return "?";
+    const a=e.a,b=e.b;
+    if(a===0) return String(b);
+    let out = (a===1)?"x":(a===-1)?"-x":(a+"x");
+    if(b>0) out += "+"+b;
+    if(b<0) out += b;
+    return out;
+  }
+  function aliasOf(nameNorm){ return nameNorm.length?nameNorm[0]:nameNorm; }
+  function parseSumEquation(eq){
+    const s=normalize(eq);
+    if(!s.includes("=")) return null;
+    const [L,R]=s.split("=");
+    if(!L||!R) return null;
+    if(!/^\d+(\.\d+)?$/.test(R)) return null;
+    const idx=L.indexOf("+"); if(idx<0) return null;
+    const left1=L.slice(0,idx), left2=L.slice(idx+1);
+    if(!left1||!left2) return null;
+
+    const a=normalize(task.A), b=normalize(task.B);
+    const names=[left1,left2];
+    const ok = (
+      (names.includes(a)&&names.includes(b)) ||
+      (names.includes(aliasOf(a))&&names.includes(b)) ||
+      (names.includes(a)&&names.includes(aliasOf(b))) ||
+      (names.includes(aliasOf(a))&&names.includes(aliasOf(b)))
+    );
+    const okAB = names.includes("a") && names.includes("b");
+    if(!ok && !okAB) return null;
+    return {sum:Number(R)};
+  }
+  function parseLinearEquation(eq){
+    const s=normalize(eq);
+    if(!s.includes("=")) return null;
+    let [L,R]=s.split("=");
+    if(!L||!R) return null;
+    const clean = (side)=>{
+      let t=side.replace(/[()]/g,"");
+      t=t.replace(/--/g,"+").replace(/\+-/g,"-").replace(/-\+/g,"-");
+      return t;
+    };
+    const LL=parseLinear(clean(L));
+    const RR=parseLinear(clean(R));
+    if(!LL||!RR) return null;
+    return {L:LL,R:RR};
+  }
+  function equivalentLinearEq(eq1, eq2){
+    const d1={a:eq1.L.a-eq1.R.a, b:eq1.L.b-eq1.R.b};
+    const d2={a:eq2.L.a-eq2.R.a, b:eq2.L.b-eq2.R.b};
+    return nearlyEqual(d1.a,d2.a) && nearlyEqual(d1.b,d2.b);
+  }
+  function buildExpectedFromChoice(){
+    if(xIs==="A"){ exprA={a:1,b:0}; exprB={a:1,b:-task.diff}; }
+    else { exprB={a:1,b:0}; exprA={a:1,b:task.diff}; }
+  }
+  function solveForX(eA,eB,sum){
+    const a=eA.a+eB.a, b=eA.b+eB.b;
+    const x=(sum-b)/a;
+    return {x, A:eA.a*x+eA.b, B:eB.a*x+eB.b};
+  }
+
+  function updateTeacherBox(){
+    let txt="Erwartung:\n\n";
+    txt += "Summe: " + task.A + " + " + task.B + " = " + task.sum + "\n";
+    if(!(done[1]||done[2]||done[3]||done[4])){
+      txt += "\n(Wird genauer nach Schritt 2)";
+      teacherBox.textContent=txt;
+      return;
+    }
+    txt += "\n" + task.A + " = " + exprToString(exprA) + "\n";
+    txt += task.B + " = " + exprToString(exprB) + "\n";
+    const sol=solveForX(exprA,exprB,task.sum);
+    txt += "\nLösung: x = " + sol.x + "\n";
+    txt += task.A + " = " + sol.A + " " + task.unit + "\n";
+    txt += task.B + " = " + sol.B + " " + task.unit + "\n";
+    teacherBox.textContent=txt;
+  }
+
+  function refreshHints(){
+    h1.textContent = "Summe aus dem Text als Gleichung:\n" + task.A + " + " + task.B + " = " + task.sum;
+    h2.textContent = "Wenn x eine Größe ist, schreibe die andere als x ± Differenz.\nHier gilt: " +
+      task.A + " = " + task.B + (task.diff>=0 ? " + " + task.diff : " - " + Math.abs(task.diff));
+    h3.textContent = "Ersetze die Namen aus Schritt 1 durch deine x-Ausdrücke:\n(" + exprToString(exprA||{a:1,b:0}) + ") + (" + exprToString(exprB||{a:1,b:0}) + ") = " + task.sum;
+    h4.textContent = "Bringe alles zusammen: meistens entsteht 2x + Zahl = " + task.sum + "\nDann nach x lösen.";
+    h5.textContent = "Setze x in beide Ausdrücke ein:\n" + task.A + " = " + exprToString(exprA||null) + "\n" + task.B + " = " + exprToString(exprB||null);
+  }
+
+  // Step checks
+  function checkStep1(){
+    hideFeedback(fb1); h1.style.display="none";
+    const parsed=parseSumEquation(inpSumEq.value);
+    if(!parsed) return setFeedback(fb1,"bad","Form passt nicht. Beispiel:\n" + task.A + " + " + task.B + " = " + task.sum);
+    if(!nearlyEqual(parsed.sum, task.sum)) return setFeedback(fb1,"bad","Summe stimmt nicht. In der Aufgabe: " + task.sum);
+    done[0]=true; setFeedback(fb1,"good","✅ Schritt 1 korrekt!"); showSteps();
+  }
+  function checkStep2(){
+    hideFeedback(fb2); h2.style.display="none";
+    const sel=document.querySelector('input[name="xIs"]:checked');
+    if(!sel) return setFeedback(fb2,"bad","Bitte wählen: Was ist x?");
+    xIs=sel.value; buildExpectedFromChoice();
+
+    const parsed=parseLinear(inpOtherExpr.value);
+    if(!parsed) return setFeedback(fb2,"bad","Das ist kein einfacher Ausdruck in x (z.B. x+6).");
+    const expectedOther=(xIs==="A")?exprB:exprA;
+    if(!(nearlyEqual(parsed.a, expectedOther.a) && nearlyEqual(parsed.b, expectedOther.b))){
+      return setFeedback(fb2,"bad","Noch nicht passend.\nErwartet z.B.: " + exprToString(expectedOther));
+    }
+    done[1]=true; setFeedback(fb2,"good","✅ Schritt 2 korrekt!"); showSteps();
+  }
+  function checkStep3(){
+    hideFeedback(fb3); h3.style.display="none";
+    if(!exprA||!exprB) return setFeedback(fb3,"bad","Bitte zuerst Schritt 2 abschließen.");
+    const eq=parseLinearEquation(inpXEq.value);
+    if(!eq) return setFeedback(fb3,"bad","Das ist keine prüfbare Gleichung in x. Beispiel:\n" + exprToString(exprA) + " + (" + exprToString(exprB) + ") = " + task.sum);
+    const expected={L:{a:exprA.a+exprB.a, b:exprA.b+exprB.b}, R:{a:0,b:task.sum}};
+    if(!equivalentLinearEq(eq, expected)){
+      return setFeedback(fb3,"bad","Einsetzen stimmt noch nicht.\nEine korrekte Form ist z.B.:\n(" + exprToString(exprA) + ") + (" + exprToString(exprB) + ") = " + task.sum);
+    }
+    done[2]=true; setFeedback(fb3,"good","✅ Schritt 3 korrekt!"); showSteps();
+  }
+  function checkStep4(){
+    hideFeedback(fb4); h4.style.display="none";
+    if(!exprA||!exprB) return setFeedback(fb4,"bad","Bitte zuerst Schritt 2 abschließen.");
+    const val=Number(inpXVal.value);
+    if(!Number.isFinite(val)) return setFeedback(fb4,"bad","Bitte Zahl für x eingeben.");
+    const sol=solveForX(exprA,exprB,task.sum);
+    if(!nearlyEqual(val, sol.x)) return setFeedback(fb4,"bad","x stimmt noch nicht.");
+    done[3]=true; setFeedback(fb4,"good","✅ Schritt 4 korrekt! x = " + sol.x); showSteps();
+  }
+  function checkStep5(){
+    hideFeedback(fb5); h5.style.display="none";
+    if(!exprA||!exprB) return setFeedback(fb5,"bad","Bitte zuerst Schritt 2 abschließen.");
+    const aVal=Number(inpAVal.value), bVal=Number(inpBVal.value);
+    if(!Number.isFinite(aVal)||!Number.isFinite(bVal)) return setFeedback(fb5,"bad","Bitte beide Zahlen eintragen.");
+    const sol=solveForX(exprA,exprB,task.sum);
+    if(!(nearlyEqual(aVal, sol.A)&&nearlyEqual(bVal, sol.B))) return setFeedback(fb5,"bad","Werte passen noch nicht (evtl. vertauscht?).");
+    done[4]=true;
+    setFeedback(fb5,"good","🎉 Alles korrekt!\n" + task.A + " = " + sol.A + " " + task.unit + "\n" + task.B + " = " + sol.B + " " + task.unit);
+    showSteps();
+  }
+
+  // Buttons / hints
   document.getElementById("check1").addEventListener("click", checkStep1);
   document.getElementById("check2").addEventListener("click", checkStep2);
   document.getElementById("check3").addEventListener("click", checkStep3);
@@ -381,608 +558,69 @@
   document.getElementById("hint4").addEventListener("click", ()=>toggleHint(4));
   document.getElementById("hint5").addEventListener("click", ()=>toggleHint(5));
 
-  btnNew.addEventListener("click", resetAll);
+  document.getElementById("btnNew").addEventListener("click", resetAll);
 
-  // ----------------------------
-  // Zustand
-  // ----------------------------
-  let task = TASKS[0];
-  let done = [false,false,false,false,false]; // 5 Schritte
-  let xIs = "A"; // "A" oder "B" (wird in Schritt 2 gesetzt)
-  let exprA = null; // linear (a,b)
-  let exprB = null;
-
-  // ----------------------------
-  // Hilfsfunktionen: Anzeige
-  // ----------------------------
-  function setFeedback(el, kind, text){
-    el.style.display = "block";
-    el.className = "feedback " + (kind || "");
-    el.textContent = text;
-  }
-  function hideFeedback(el){ el.style.display="none"; el.textContent=""; el.className="feedback"; }
-
-  function toggleHint(n){
-    const map = {1:h1,2:h2,3:h3,4:h4,5:h5};
-    const el = map[n];
-    el.style.display = (el.style.display === "none" ? "block" : "none");
-  }
-
-  function updatePills(){
-    pillProblem.textContent = "Problem: " + task.title;
-    const stepNum = currentStepIndex()+1;
-    pillStep.textContent = "Schritt: " + stepNum + " / 5";
-  }
-
-  function updateProgress(){
-    const count = done.filter(Boolean).length;
-    progressText.textContent = count + " / 5 erledigt";
-    progressBar.style.width = (count/5*100) + "%";
-  }
-
-  function currentStepIndex(){
-    // erster nicht erledigter Schritt
-    for(let i=0;i<done.length;i++){
-      if(!done[i]) return i;
-    }
-    return 4;
-  }
-
-  function showSteps(){
-    step1.style.display = done[0] ? "none" : "block";
-    step2.style.display = (done[0] && !done[1]) ? "block" : "none";
-    step3.style.display = (done[0] && done[1] && !done[2]) ? "block" : "none";
-    step4.style.display = (done[0] && done[1] && done[2] && !done[3]) ? "block" : "none";
-    step5.style.display = (done[0] && done[1] && done[2] && done[3] && !done[4]) ? "block" : "none";
-
-    // Wenn alles fertig:
-    if(done.every(Boolean)){
-      step1.style.display = "none";
-      step2.style.display = "none";
-      step3.style.display = "none";
-      step4.style.display = "none";
-      step5.style.display = "block";
-    }
-    updatePills();
-    updateProgress();
-    updateTeacherBox();
-  }
-
-  function updateTeacherBox(){
-    // Nur sinnvolle Erwartung anzeigen, wenn x-Wahl getroffen wurde (nach Schritt 2)
-    let txt = "";
-    txt += "Erwartung (abhängig von deiner x-Wahl):\n\n";
-    txt += "Summe: " + task.A + " + " + task.B + " = " + task.sum + "\n";
-
-    const chosen = (done[1] || done[2] || done[3] || done[4]);
-    if(!chosen){
-      txt += "\nWähle in Schritt 2, wer x ist, dann zeigt das Tool die erwartete Umformung.";
-      teacherBox.textContent = txt;
-      return;
-    }
-
-    const eA = exprToString(exprA);
-    const eB = exprToString(exprB);
-    txt += "\nWenn x = " + (xIs==="A" ? task.A : task.B) + ":\n";
-    txt += task.A + " = " + eA + "\n";
-    txt += task.B + " = " + eB + "\n";
-    txt += "\nEingesetzt: (" + eA + ") + (" + eB + ") = " + task.sum + "\n";
-
-    const sol = solveForX(exprA, exprB, task.sum);
-    txt += "\nLösung: x = " + sol.x + "\n";
-    txt += task.A + " = " + sol.A + " " + task.unit + "\n";
-    txt += task.B + " = " + sol.B + " " + task.unit + "\n";
-
-    teacherBox.textContent = txt;
-  }
-
-  // ----------------------------
-  // Parser: lineare Ausdrücke ax + b
-  // Ziel: simple Eingaben akzeptieren:
-  // "x", "x+6", "x-3", "6+x", "  x +  6  "
-  // (Optional: Klammern werden nur entfernt, nicht "ausmultipliziert")
-  // ----------------------------
-  function normalize(s){
-    return (s||"")
-      .toLowerCase()
-      .replace(/\s+/g,"")
-      .replace(/,/g,".");
-  }
-
-  function parseLinear(expr){
-    // returns {a: number, b: number} for a*x + b
-    // very limited and safe parser
-    let s = normalize(expr);
-
-    // remove outer parentheses repeatedly
-    while(s.startsWith("(") && s.endsWith(")")){
-      // only strip if parentheses match in a trivial way
-      const inner = s.slice(1,-1);
-      if(isBalanced(inner)){
-        s = inner;
-      } else break;
-    }
-
-    // if still has parentheses inside, we only allow patterns like x+(x+6)
-    // parseEquation handles full equations; parseLinear stays minimal:
-    // Accept only: x, x+N, x-N, N+x, -x, -x+N, etc.
-    // No multiplication, division.
-    if(s.includes("*") || s.includes("/") || s.includes("^")) return null;
-
-    // Replace leading '+' if any
-    if(s.startsWith("+")) s = s.slice(1);
-
-    // Helper: parse token like "x", "-x", "12", "-3"
-    const isNumber = (t)=>/^[-+]?\d+(\.\d+)?$/.test(t);
-    const isX = (t)=> t==="x" || t==="+x" || t==="-x";
-
-    // Split by + and - but keep signs
-    // Example: "x-6" => ["x", "-6"]
-    // Example: "6+x" => ["6", "+x"]
-    const parts = [];
-    let cur = "";
-    for(let i=0;i<s.length;i++){
-      const ch = s[i];
-      if((ch==="+" || ch==="-" ) && i>0){
-        parts.push(cur);
-        cur = ch;
-      } else {
-        cur += ch;
-      }
-    }
-    if(cur) parts.push(cur);
-
-    let a=0, b=0;
-    for(const p of parts){
-      if(p==="") continue;
-      if(isX(p)){ a += (p.startsWith("-") ? -1 : 1); continue; }
-      if(p.endsWith("x") && isNumber(p.slice(0,-1))){
-        // allow "2x" or "-3x" (optional)
-        a += Number(p.slice(0,-1));
-        continue;
-      }
-      if(isNumber(p)){ b += Number(p); continue; }
-      return null;
-    }
-    return {a,b};
-  }
-
-  function isBalanced(s){
-    let d=0;
-    for(const ch of s){
-      if(ch==="(") d++;
-      if(ch===")") d--;
-      if(d<0) return false;
-    }
-    return d===0;
-  }
-
-  function exprToString(e){
-    if(!e) return "?";
-    const a = e.a, b = e.b;
-    // Build nice minimal string
-    let out = "";
-    if(a===0){
-      out = String(b);
-      return out;
-    }
-    if(a===1) out = "x";
-    else if(a===-1) out = "-x";
-    else out = a + "x";
-
-    if(b>0) out += "+" + b;
-    if(b<0) out += b; // b already negative
-    if(b===0) {/* nothing */}
-    return out;
-  }
-
-  function parseSumEquation(eq){
-    // Accept forms like "Sandra+Hannes=30" in any order
-    // returns {leftNames:[n1,n2], sum:number} or null
-    const s = normalize(eq);
-    if(!s.includes("=")) return null;
-    const [L,R] = s.split("=");
-    if(R==="" || L==="") return null;
-    if(!/^\d+(\.\d+)?$/.test(R)) return null;
-
-    // left must contain a '+'
-    const idx = L.indexOf("+");
-    if(idx<0) return null;
-    const left1 = L.slice(0,idx);
-    const left2 = L.slice(idx+1);
-    if(!left1 || !left2) return null;
-
-    // match names (case-insensitive) against task.A / task.B
-    const a = normalize(task.A);
-    const b = normalize(task.B);
-
-    const names = [left1,left2];
-    const ok = (
-      (names.includes(a) && names.includes(b)) ||
-      (names.includes(aliasOf(a)) && names.includes(b)) ||
-      (names.includes(a) && names.includes(aliasOf(b))) ||
-      (names.includes(aliasOf(a)) && names.includes(aliasOf(b)))
-    );
-
-    // also allow single-letter placeholders "a" and "b"
-    const okAB = names.includes("a") && names.includes("b");
-
-    if(!ok && !okAB) return null;
-
-    return {sum:Number(R), leftNames:names};
-  }
-
-  function aliasOf(nameNorm){
-    // very small alias: allow first letter (e.g. "sandra" -> "s")
-    return nameNorm.length>0 ? nameNorm[0] : nameNorm;
-  }
-
-  function parseLinearEquation(eq){
-    // Parse equation of form (linear expr) = (number OR linear expr)
-    // returns {L:{a,b}, R:{a,b}} or null
-    const s = normalize(eq);
-    if(!s.includes("=")) return null;
-    const [L,R] = s.split("=");
-    if(L==="" || R==="") return null;
-
-    // allow parentheses by simply removing them when safe
-    const cleanSide = (side)=>{
-      // remove parentheses chars; this is safe only for sums of x and constants (we already restrict)
-      // e.g. x+(x+6) -> x+x+6  (works!)
-      let t = side.replace(/[()]/g,"");
-      // turn "--" into "+"
-      t = t.replace(/--/g,"+");
-      t = t.replace(/\+-/g,"-");
-      t = t.replace(/-\+/g,"-");
-      return t;
-    };
-
-    const LL = parseLinear(cleanSide(L));
-    const RR = parseLinear(cleanSide(R));
-    if(!LL || !RR) return null;
-    return {L:LL, R:RR};
-  }
-
-  function equivalentLinearEq(eq1, eq2){
-    // eq: {L:{a,b}, R:{a,b}}
-    // compare L-R
-    const d1 = {a:eq1.L.a - eq1.R.a, b:eq1.L.b - eq1.R.b};
-    const d2 = {a:eq2.L.a - eq2.R.a, b:eq2.L.b - eq2.R.b};
-    return nearlyEqual(d1.a,d2.a) && nearlyEqual(d1.b,d2.b);
-  }
-
-  function nearlyEqual(x,y){
-    return Math.abs(x-y) < 1e-9;
-  }
-
-  // ----------------------------
-  // Mathe: erwartete Ausdrücke + Lösung
-  // ----------------------------
-  function buildExpectedFromChoice(){
-    // relation: A = B + diff
-    // If x = A => A = x, B = x - diff
-    // If x = B => B = x, A = x + diff
-    if(xIs==="A"){
-      exprA = {a:1,b:0};
-      exprB = {a:1,b:(-task.diff)};
-    } else {
-      exprB = {a:1,b:0};
-      exprA = {a:1,b:task.diff};
-    }
-  }
-
-  function solveForX(eA,eB,sum){
-    // (aA x + bA) + (aB x + bB) = sum
-    const a = eA.a + eB.a;
-    const b = eA.b + eB.b;
-    // a*x + b = sum => x = (sum - b)/a
-    const x = (sum - b)/a;
-
-    const A = eA.a * x + eA.b;
-    const B = eB.a * x + eB.b;
-
-    // For our tasks, x and results are integers
-    return {x, A, B};
-  }
-
-  // ----------------------------
-  // Schritt-Prüfungen
-  // ----------------------------
-  function checkStep1(){
-    hideFeedback(fb1);
-    h1.style.display="none";
-
-    const parsed = parseSumEquation(inpSumEq.value);
-    if(!parsed){
-      setFeedback(fb1,"bad",
-        "Das passt noch nicht.\n" +
-        "Achte auf die Form: Name + Name = Zahl\n" +
-        "Beispiel: " + task.A + " + " + task.B + " = " + task.sum
-      );
-      return;
-    }
-    if(!nearlyEqual(parsed.sum, task.sum)){
-      setFeedback(fb1,"bad",
-        "Fast — aber die Summe stimmt nicht.\n" +
-        "In der Aufgabe steht: zusammen = " + task.sum
-      );
-      return;
-    }
-
-    done[0]=true;
-    setFeedback(fb1,"good","✅ Schritt 1 ist korrekt!");
-    showSteps();
-  }
-
-  function checkStep2(){
-    hideFeedback(fb2);
-    h2.style.display="none";
-
-    // read selected x
-    const sel = document.querySelector('input[name="xIs"]:checked');
-    if(!sel){
-      setFeedback(fb2,"bad","Bitte wähle zuerst, was x sein soll.");
-      return;
-    }
-    xIs = sel.value;
-    buildExpectedFromChoice();
-
-    // other expression:
-    const otherExpr = inpOtherExpr.value;
-    const parsed = parseLinear(otherExpr);
-    if(!parsed){
-      setFeedback(fb2,"bad",
-        "Das sieht nicht nach einem einfachen Ausdruck in x aus.\n" +
-        "Erlaubt: x, x+Zahl, x-Zahl, Zahl+x"
-      );
-      return;
-    }
-
-    // Determine which one is "other"
-    const expectedOther = (xIs==="A") ? exprB : exprA;
-
-    if(!(nearlyEqual(parsed.a, expectedOther.a) && nearlyEqual(parsed.b, expectedOther.b))){
-      // give targeted feedback
-      const xName = (xIs==="A" ? task.A : task.B);
-      const otherName = (xIs==="A" ? task.B : task.A);
-
-      const expectedStr = exprToString(expectedOther);
-      setFeedback(fb2,"bad",
-        "Noch nicht korrekt.\n" +
-        "Du hast gewählt: x = " + xName + "\n" +
-        "Dann muss " + otherName + " als Ausdruck in x passen.\n" +
-        "Erwartet wäre z.B.: " + expectedStr
-      );
-      return;
-    }
-
-    done[1]=true;
-    setFeedback(fb2,"good","✅ Schritt 2 ist korrekt!");
-    showSteps();
-  }
-
-  function checkStep3(){
-    hideFeedback(fb3);
-    h3.style.display="none";
-
-    // must have expected expressions
-    if(!exprA || !exprB){
-      setFeedback(fb3,"bad","Bitte zuerst Schritt 2 korrekt abschließen.");
-      return;
-    }
-
-    const eq = parseLinearEquation(inpXEq.value);
-    if(!eq){
-      setFeedback(fb3,"bad",
-        "Das ist noch keine prüfbare Gleichung in x.\n" +
-        "Beispiel: x + (x+6) = " + task.sum
-      );
-      return;
-    }
-
-    // expected equation: exprA + exprB = sum
-    const expectedL = {a: exprA.a + exprB.a, b: exprA.b + exprB.b};
-    const expected = {L: expectedL, R: {a:0,b:task.sum}};
-
-    if(!equivalentLinearEq(eq, expected)){
-      setFeedback(fb3,"bad",
-        "Noch nicht korrekt eingesetzt.\n" +
-        "Tipp: Ersetze " + task.A + " und " + task.B + " durch deine Ausdrücke und behalte die Summe " + task.sum + ".\n" +
-        "Eine korrekte Form wäre z.B.: (" + exprToString(exprA) + ") + (" + exprToString(exprB) + ") = " + task.sum
-      );
-      return;
-    }
-
-    done[2]=true;
-    setFeedback(fb3,"good","✅ Schritt 3 ist korrekt!");
-    showSteps();
-  }
-
-  function checkStep4(){
-    hideFeedback(fb4);
-    h4.style.display="none";
-
-    if(!exprA || !exprB){
-      setFeedback(fb4,"bad","Bitte zuerst Schritt 2 korrekt abschließen.");
-      return;
-    }
-
-    const val = Number(inpXVal.value);
-    if(!Number.isFinite(val)){
-      setFeedback(fb4,"bad","Bitte gib eine Zahl für x ein.");
-      return;
-    }
-
-    const sol = solveForX(exprA, exprB, task.sum);
-    if(!nearlyEqual(val, sol.x)){
-      setFeedback(fb4,"bad",
-        "Das stimmt noch nicht.\n" +
-        "Kontrolliere: Nach dem Einsetzen ergibt sich eine Gleichung mit 2x.\n" +
-        "Wenn du willst: Nutze den Hinweis-Button."
-      );
-      return;
-    }
-
-    done[3]=true;
-    setFeedback(fb4,"good","✅ Schritt 4 ist korrekt! x = " + sol.x);
-    showSteps();
-  }
-
-  function checkStep5(){
-    hideFeedback(fb5);
-    h5.style.display="none";
-
-    if(!exprA || !exprB){
-      setFeedback(fb5,"bad","Bitte zuerst Schritt 2 korrekt abschließen.");
-      return;
-    }
-
-    const aVal = Number(inpAVal.value);
-    const bVal = Number(inpBVal.value);
-    if(!Number.isFinite(aVal) || !Number.isFinite(bVal)){
-      setFeedback(fb5,"bad","Bitte trage bei beiden Feldern Zahlen ein.");
-      return;
-    }
-
-    const sol = solveForX(exprA, exprB, task.sum);
-    if(!(nearlyEqual(aVal, sol.A) && nearlyEqual(bVal, sol.B))){
-      setFeedback(fb5,"bad",
-        "Noch nicht ganz.\n" +
-        "Kontrolliere, ob du die Werte für " + task.A + " und " + task.B + richtig aus x berechnet hast.\n" +
-        "Achtung: " + task.A + " und " + task.B + " nicht vertauschen."
-      );
-      return;
-    }
-
-    done[4]=true;
-    setFeedback(fb5,"good",
-      "🎉 Alles korrekt!\n" +
-      task.A + " = " + sol.A + " " + task.unit + "\n" +
-      task.B + " = " + sol.B + " " + task.unit
-    );
-    showSteps();
-  }
-
-  // ----------------------------
-  // Hinweise pro Schritt
-  // ----------------------------
-  function refreshHints(){
-    h1.textContent =
-      "Schreibe genau die Summe aus dem Text als Gleichung.\n" +
-      "Also: " + task.A + " + " + task.B + " = " + task.sum + "\n" +
-      "(Reihenfolge ist egal.)";
-
-    h2.textContent =
-      "Wenn x die erste Größe ist, dann ist die zweite oft x plus/minus die Differenz.\n" +
-      "Merke: „A ist um d weniger als B“ bedeutet A = B - d.\n" +
-      "Hier gilt: " + task.A + " = " + task.B + " " + (task.diff>=0 ? "+ " + task.diff : "- " + Math.abs(task.diff)) + ".";
-
-    h3.textContent =
-      "Nimm die Gleichung aus Schritt 1 und ersetze die Namen durch deine x-Ausdrücke.\n" +
-      "Beispiel: (" + task.A + ") wird zu (" + exprToString(exprA||{a:1,b:0}) + ").";
-
-    h4.textContent =
-      "Nach Schritt 3 steht etwas wie: 2x + Zahl = " + task.sum + "\n" +
-      "Dann: 2x = " + task.sum + " - Zahl\n" +
-      "Dann: x = (Ergebnis) / 2";
-
-    h5.textContent =
-      "Wenn du x hast, setze es in beide Ausdrücke ein.\n" +
-      task.A + " = " + (exprA ? exprToString(exprA) : "?") + "\n" +
-      task.B + " = " + (exprB ? exprToString(exprB) : "?");
-  }
-
-  // ----------------------------
-  // UI-Setup
-  // ----------------------------
+  // Task dropdown
   function populateTasks(){
     problemSelect.innerHTML = "";
-    TASKS.forEach((t,i)=>{
-      const opt = document.createElement("option");
-      opt.value = t.id;
-      opt.textContent = t.title;
+    TASKS.forEach(t=>{
+      const opt=document.createElement("option");
+      opt.value=t.id; opt.textContent=t.title;
       problemSelect.appendChild(opt);
     });
   }
 
   function renderTask(){
-    problemText.textContent =
-      task.text + "\n\n" +
-      "Gesucht: " + task.A + " und " + task.B + ".";
+    problemText.textContent = task.text + "\n\nGesucht: " + task.A + " und " + task.B + ".";
     lblA.textContent = task.A + " (" + task.unit + ")";
     lblB.textContent = task.B + " (" + task.unit + ")";
-    inpSumEq.value = "";
-    inpOtherExpr.value = "";
-    inpXEq.value = "";
-    inpXVal.value = "";
-    inpAVal.value = "";
-    inpBVal.value = "";
 
-    // x choices
-    xChoice.innerHTML = "";
-    const makeRadio = (value, label)=>{
-      const wrap = document.createElement("label");
-      wrap.className = "radio";
-      const input = document.createElement("input");
-      input.type = "radio";
-      input.name = "xIs";
-      input.value = value;
-      const span = document.createElement("span");
-      span.textContent = label;
-      wrap.appendChild(input);
-      wrap.appendChild(span);
+    inpSumEq.value=""; inpOtherExpr.value=""; inpXEq.value=""; inpXVal.value=""; inpAVal.value=""; inpBVal.value="";
+
+    xChoice.innerHTML="";
+    const makeRadio=(value,label)=>{
+      const wrap=document.createElement("label");
+      wrap.className="radio";
+      const input=document.createElement("input");
+      input.type="radio"; input.name="xIs"; input.value=value;
+      const span=document.createElement("span"); span.textContent=label;
+      wrap.appendChild(input); wrap.appendChild(span);
       wrap.addEventListener("click", ()=>{
-        input.checked = true;
-        // update label for other expr
-        const other = (value==="A") ? task.B : task.A;
+        input.checked=true;
+        const other=(value==="A")?task.B:task.A;
         lblOtherExpr.textContent = other + " als Ausdruck in x";
       });
       return wrap;
     };
-    xChoice.appendChild(makeRadio("A", "x = " + task.A));
-    xChoice.appendChild(makeRadio("B", "x = " + task.B));
+    xChoice.appendChild(makeRadio("A","x = " + task.A));
+    xChoice.appendChild(makeRadio("B","x = " + task.B));
+    lblOtherExpr.textContent="Andere Größe als Ausdruck in x";
 
-    lblOtherExpr.textContent = "Andere Größe als Ausdruck in x";
-
-    // reset feedback/hints
     [fb1,fb2,fb3,fb4,fb5].forEach(hideFeedback);
     [h1,h2,h3,h4,h5].forEach(el=>{el.style.display="none"; el.textContent="";});
-
-    teacherBox.textContent = "Erwartung (abhängig von deiner x-Wahl):\n\nSumme: " + task.A + " + " + task.B + " = " + task.sum + "\n\nWähle in Schritt 2, wer x ist, dann zeigt das Tool die erwartete Umformung.";
-
     refreshHints();
     updatePills();
+    updateTeacherBox();
   }
 
   function resetAll(){
-    done = [false,false,false,false,false];
-    xIs = "A";
-    exprA = null; exprB = null;
+    done=[false,false,false,false,false];
+    xIs="A"; exprA=null; exprB=null;
     renderTask();
     showSteps();
   }
 
   problemSelect.addEventListener("change", ()=>{
-    const id = problemSelect.value;
-    task = TASKS.find(t=>t.id===id) || TASKS[0];
+    task = TASKS.find(t=>t.id===problemSelect.value) || TASKS[0];
     resetAll();
   });
 
-  // ----------------------------
-  // Init
-  // ----------------------------
+  // INIT (entscheidend!)
   populateTasks();
   problemSelect.value = TASKS[0].id;
   task = TASKS[0];
   resetAll();
-
-  // keep hints fresh when expressions are known
-  const hintRefreshers = [inpOtherExpr, inpXEq, inpXVal, inpAVal, inpBVal];
-  hintRefreshers.forEach(el=>{
-    el.addEventListener("input", ()=>refreshHints());
-  });
-
-})();
+});
 </script>
 </body>
 </html>
